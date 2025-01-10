@@ -39,6 +39,6 @@ export function modifyEslintConfig(filePath: string) {
     fs.writeFileSync(filePath, updatedContent, "utf8");
     console.log(`Modified ${filePath} to include suggested changes.`);
   } catch (error) {
-    console.error(`Error processing file ${filePath}: ${(error as Error).message}`);
+    throw new Error(`Error processing file ${filePath}: ${(error as Error).message}`);
   }
 }

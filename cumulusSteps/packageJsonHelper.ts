@@ -11,7 +11,7 @@ export function addYarnScript(filePath: string, scriptName: string, scriptComman
     fs.writeFileSync(filePath, JSON.stringify(packageJson, null, 2), "utf8");
     console.log(`Added script "${scriptName}" to ${filePath}`);
   } catch (error) {
-    console.error(`Error processing file ${filePath}: ${(error as Error).message}`);
+    throw new Error(`Error processing file ${filePath}: ${(error as Error).message}`);
   }
 }
 
@@ -26,7 +26,7 @@ export function removeYarnScript(filePath: string, scriptName: string) {
       console.log(`Script "${scriptName}" not found in ${filePath}`);
     }
   } catch (error) {
-    console.error(`Error processing file ${filePath}: ${(error as Error).message}`);
+    throw new Error(`Error processing file ${filePath}: ${(error as Error).message}`);
   }
 }
 
@@ -41,7 +41,7 @@ export function modifyYarnScript(filePath: string, scriptName: string, newScript
       console.log(`Script "${scriptName}" not found in ${filePath}`);
     }
   } catch (error) {
-    console.error(`Error processing file ${filePath}: ${(error as Error).message}`);
+    throw new Error(`Error processing file ${filePath}: ${(error as Error).message}`);
   }
 }
 
@@ -59,7 +59,7 @@ export function replaceInYarnScript(filePath: string, scriptName: string, search
       console.log(`Script "${scriptName}" not found in ${filePath}`);
     }
   } catch (error) {
-    console.error(`Error processing file ${filePath}: ${(error as Error).message}`);
+    throw new Error(`Error processing file ${filePath}: ${(error as Error).message}`);
   }
 }
 
@@ -76,6 +76,6 @@ export function modifyJestCollectCoverageFrom(filePath: string) {
       console.log(`jest.collectCoverageFrom not found in ${filePath}`);
     }
   } catch (error) {
-    console.error(`Error processing file ${filePath}: ${(error as Error).message}`);
+    throw new Error(`Error processing file ${filePath}: ${(error as Error).message}`);
   }
 }

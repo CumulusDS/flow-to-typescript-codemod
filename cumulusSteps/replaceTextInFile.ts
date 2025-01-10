@@ -8,6 +8,6 @@ export function replaceTextInFile(filePath: string, searchValue: string, replace
     fs.writeFileSync(filePath, updatedContent, "utf8");
     console.log(`Replaced "${searchValue}" with "${replaceValue}" in ${filePath}`);
   } catch (error) {
-    console.error(`Error processing file ${filePath}: ${(error as Error).message}`);
+    throw new Error(`Error processing file ${filePath}: ${(error as Error).message}`);
   }
 }

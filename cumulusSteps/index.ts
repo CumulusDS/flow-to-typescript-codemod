@@ -18,8 +18,8 @@ import {
 
 export class CumulusSteps {
   private targetRepoPath: string;
-  private steps: Array<{ name: string; stepFunction: () => void }> = [];
-  private addDefaultSteps() {
+  private steps: Array<{ name: string; stepFunction: () => void | Promise<void> }> = [];
+  private async addDefaultSteps() {
     const packageJsonFilePath = path.join(this.targetRepoPath, "package.json");
     const tsconfigFilePath = path.join(this.targetRepoPath, "tsconfig.json");
     const eslintrcFilePath = path.join(this.targetRepoPath, ".eslintrc.js");
@@ -27,21 +27,25 @@ export class CumulusSteps {
     this.addStep("Create tsconfig.json", () => {
       createTsConfigFile(tsconfigFilePath);
     });
-    this.addStep("Install TypeScript as a dev dependency", () =>
-      runCommands(this.targetRepoPath, ["yarn add typescript --dev"])
+    this.addStep(
+      "Install TypeScript as a dev dependency",
+      async () => await runCommands(this.targetRepoPath, ["yarn add typescript --dev"])
     );
-    this.addStep("Remove flow artifacts", () =>
-      runCommands(this.targetRepoPath, ["rm -rf flow-typed", "rm -f .flowconfig"])
+    this.addStep(
+      "Remove flow artifacts",
+      async () => await runCommands(this.targetRepoPath, ["rm -rf flow-typed", "rm -f .flowconfig"])
     );
     this.addStep("Update babel config", () => {
       const babelrcFilePath = path.join(this.targetRepoPath, ".babelrc.js");
       replaceTextInFile(babelrcFilePath, "@babel/preset-flow", "@babel/preset-typescript");
     });
-    this.addStep("Remove babel old dependencies", () =>
-      runCommands(this.targetRepoPath, ["yarn remove @babel/preset-flow babel-eslint"])
+    this.addStep(
+      "Remove babel old dependencies",
+      async () => await runCommands(this.targetRepoPath, ["yarn remove @babel/preset-flow babel-eslint"])
     );
-    this.addStep("Add babel new dependencies", () =>
-      runCommands(this.targetRepoPath, ["yarn add @babel/preset-typescript --dev"])
+    this.addStep(
+      "Add babel new dependencies",
+      async () => await runCommands(this.targetRepoPath, ["yarn add @babel/preset-typescript --dev"])
     );
     this.addStep("Update eslint config", () => {
       replaceTextInFile(eslintrcFilePath, "plugin:flowtype/recommended", "plugin:@typescript-eslint/recommended");
@@ -50,25 +54,36 @@ export class CumulusSteps {
       modifyEslintConfig(eslintrcFilePath);
     });
 
-    this.addStep("Update eslint to ^8.57.1", () => runCommands(this.targetRepoPath, ["yarn add eslint@^8.57.1 --dev"]));
-    this.addStep("Install eslint plugin and parser ", () =>
-      runCommands(this.targetRepoPath, ["yarn add @typescript-eslint/eslint-plugin @typescript-eslint/parser --dev"])
+    this.addStep(
+      "Update eslint to ^8.57.1",
+      async () => await runCommands(this.targetRepoPath, ["yarn add eslint@^8.57.1 --dev"])
     );
-    this.addStep("Update prettier to ^3.3.3", () =>
-      runCommands(this.targetRepoPath, ["yarn add prettier@^3.3.3 --dev"])
+    this.addStep(
+      "Install eslint plugin and parser ",
+      async () =>
+        await runCommands(this.targetRepoPath, [
+          "yarn add @typescript-eslint/eslint-plugin @typescript-eslint/parser --dev",
+        ])
     );
-    this.addStep("Update eslint-config-prettier to ^8.10.0", () =>
-      runCommands(this.targetRepoPath, ["yarn add eslint-config-prettier@^8.10.0 --dev"])
+    this.addStep(
+      "Update prettier to ^3.3.3",
+      async () => await runCommands(this.targetRepoPath, ["yarn add prettier@^3.3.3 --dev"])
     );
-    this.addStep("Update eslint-plugin-prettier to ^5.2.1", () =>
-      runCommands(this.targetRepoPath, ["yarn add eslint-plugin-prettier@^5.2.1 --dev"])
+    this.addStep(
+      "Update eslint-config-prettier to ^8.10.0",
+      async () => await runCommands(this.targetRepoPath, ["yarn add eslint-config-prettier@^8.10.0 --dev"])
     );
-    this.addStep("Add eslint-plugin-import", () =>
-      runCommands(this.targetRepoPath, ["yarn add eslint-plugin-import --dev"])
+    this.addStep(
+      "Update eslint-plugin-prettier to ^5.2.1",
+      async () => await runCommands(this.targetRepoPath, ["yarn add eslint-plugin-prettier@^5.2.1 --dev"])
+    );
+    this.addStep(
+      "Add eslint-plugin-import",
+      async () => await runCommands(this.targetRepoPath, ["yarn add eslint-plugin-import --dev"])
     );
 
     // this.addStep("Update build script", () => modifyYarnScript(packageJsonFilePath, "build", "tsc"));
-    this.addStep("Update build script", () => replaceInYarnScript(packageJsonFilePath, "build", "^", "^tsc && "));
+    this.addStep("Update build script", () => replaceInYarnScript(packageJsonFilePath, "build", "^", "tsc && "));
 
     this.addStep("Add script to generate flowtypes", () =>
       addYarnScript(
@@ -108,16 +123,23 @@ export class CumulusSteps {
 
     this.addStep("Update Jest Coverage", () => modifyJestCollectCoverageFrom(packageJsonFilePath));
 
-    this.addStep("Remove @cumulusds/flow-aws-sdk", () =>
-      runCommands(this.targetRepoPath, ["yarn @cumulusds/flow-aws-sdk"])
+    this.addStep(
+      "Remove @cumulusds/flow-aws-sdk",
+      async () => await runCommands(this.targetRepoPath, ["yarn @cumulusds/flow-aws-sdk"])
     );
-    this.addStep("Remove flow-bin", () => runCommands(this.targetRepoPath, ["yarn remove flow-bin"]));
-    this.addStep("Remove flow-copy-source", () => runCommands(this.targetRepoPath, ["yarn remove flow-copy-source"]));
-    this.addStep("Remove flow-typed", () => runCommands(this.targetRepoPath, ["yarn remove flow-typed"]));
+    this.addStep("Remove flow-bin", async () => await runCommands(this.targetRepoPath, ["yarn remove flow-bin"]));
+    this.addStep(
+      "Remove flow-copy-source",
+      async () => await runCommands(this.targetRepoPath, ["yarn remove flow-copy-source"])
+    );
+    this.addStep("Remove flow-typed", async () => await runCommands(this.targetRepoPath, ["yarn remove flow-typed"]));
 
-    this.addStep("Add @types/aws-lambda", () => runCommands(this.targetRepoPath, ["yarn add @types/aws-lambda --dev"]));
-    this.addStep("Add @types/jest", () => runCommands(this.targetRepoPath, ["yarn add @types/jest --dev"]));
-    this.addStep("Add flowgen", () => runCommands(this.targetRepoPath, ["yarn add flowgen --dev"]));
+    this.addStep(
+      "Add @types/aws-lambda",
+      async () => await runCommands(this.targetRepoPath, ["yarn add @types/aws-lambda --dev"])
+    );
+    this.addStep("Add @types/jest", async () => await runCommands(this.targetRepoPath, ["yarn add @types/jest --dev"]));
+    this.addStep("Add flowgen", async () => await runCommands(this.targetRepoPath, ["yarn add flowgen --dev"]));
   }
   constructor(targetRepoPath: string) {
     this.targetRepoPath = targetRepoPath;
@@ -131,10 +153,15 @@ export class CumulusSteps {
   public addStep(name: string, stepFunction: () => void) {
     this.steps.push({ name, stepFunction });
   }
-  public runSteps() {
-    this.steps.forEach((step) => {
-      console.log(`Running step: ${step.name}`);
-      step.stepFunction();
-    });
+  public async runSteps() {
+    for await (const step of this.steps) {
+      console.log("\n", `Running step: ${step.name}`);
+      try {
+        await step.stepFunction();
+      } catch (error) {
+        console.error(`Error executing step "${step.name}": ${(error as Error).message}`);
+      }
+      console.log(`Completed step: ${step.name}`);
+    }
   }
 }

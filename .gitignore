@@ -16,3 +16,13 @@ src/test/test-files/*.tsx
 *.tsbuildinfo
 
 coverage/
+
+
+# Yarn v4. See: https://yarnpkg.com/getting-started/qa/#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

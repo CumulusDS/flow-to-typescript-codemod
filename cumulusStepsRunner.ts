@@ -48,7 +48,9 @@ steps.forEach((step, indx) => {
 
 if (nonInteractive) {
   console.log("Executing steps in non-interactive mode...");
-  cumulusSteps.runSteps();
+  cumulusSteps.runSteps().then(() => {
+    console.log("Exiting after executing steps");
+  });
   process.exit(0);
 }
 
@@ -63,7 +65,7 @@ readUserInput.question("Do you want to execute all steps? (Y/n)", (answer) => {
   if (answer.toLowerCase() === "y" || answer === "") {
     console.log("Executing steps...");
     cumulusSteps.runSteps();
-    console.log("Exiting after executing");
+    console.log("Exiting after executing steps");
   } else {
     console.log("Exiting without executing steps");
   }

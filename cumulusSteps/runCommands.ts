@@ -1,19 +1,28 @@
 /* eslint-disable no-console */
-import { exec } from "child_process";
+import { spawn } from "child_process";
 import path from "path";
 
-export function runCommands(targetRepoPath: string, commands: string[]) {
-  commands.forEach((command) => {
-    exec(command, { cwd: path.resolve(targetRepoPath) }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error executing command "${command}" in "${targetRepoPath}": ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        console.error(`stderr for command "${command}" in "${targetRepoPath}": ${stderr}`);
-        return;
-      }
-      console.log(`stdout for command "${command}" in "${targetRepoPath}": ${stdout}`);
+export async function runCommands(targetRepoPath: string, commands: string[]) {
+  for (const command of commands) {
+    await new Promise<void>((resolve, reject) => {
+      const [cmd, ...args] = command.split(" ");
+      const child = spawn(cmd, args, {
+        cwd: path.resolve(targetRepoPath),
+        shell: true,
+        stdio: "inherit", // Inherit stdio to capture output in real-time
+      });
+
+      child.on("close", (code) => {
+        if (code !== 0) {
+          reject(new Error(`Command "${command}" failed with exit code ${code}`));
+        } else {
+          resolve();
+        }
+      });
+
+      child.on("error", (error) => {
+        reject(new Error(`Error executing command "${command}": ${error.message}`));
+      });
     });
-  });
+  }
 }
