@@ -7,10 +7,32 @@
 import fs from "fs";
 import path from "path";
 import readline from "readline";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 import { CumulusSteps } from "./cumulusSteps";
 
-const targetRepoPath = process.argv[2];
-const nonInteractive = process.argv[3] === "--non-interactive";
+const { argv } = yargs(hideBin(process.argv))
+  .usage("Usage: ts-node cumulusStepsRunner.ts [options]")
+  .version("1.0.0")
+  .option("targetRepoPath", {
+    alias: "t",
+    type: "string",
+    description: "Path to the target repository",
+    demandOption: true,
+  })
+  .option("nonInteractive", {
+    alias: "n",
+    type: "boolean",
+    description: "Run in non-interactive mode",
+    default: false,
+    demandOption: true,
+  })
+  .demandOption("targetRepoPath", "Please provide the path to the target repository")
+  .help();
+
+const { targetRepoPath, nonInteractive } = argv as { targetRepoPath: string; nonInteractive: boolean };
+
+console.log({ targetRepoPath, nonInteractive });
 
 if (!fs.existsSync(targetRepoPath)) {
   console.error(`Path ${targetRepoPath} does not exist`);
@@ -25,8 +47,8 @@ steps.forEach((step, indx) => {
 });
 
 if (nonInteractive) {
-  // cumulusSteps.runSteps();
-  console.log("Executing steps in non-interactive mode");
+  console.log("Executing steps in non-interactive mode...");
+  cumulusSteps.runSteps();
   process.exit(0);
 }
 
@@ -39,12 +61,11 @@ const readUserInput = readline.createInterface({
 readUserInput.question("Do you want to execute all steps? (Y/n)", (answer) => {
   // handle yes or enter key
   if (answer.toLowerCase() === "y" || answer === "") {
-    // cumulusSteps.runSteps();
+    console.log("Executing steps...");
+    cumulusSteps.runSteps();
     console.log("Exiting after executing");
   } else {
     console.log("Exiting without executing steps");
   }
   readUserInput.close();
 });
-
-// cumulusSteps.runSteps();

@@ -1,18 +1,19 @@
 /* eslint-disable no-console */
 import { exec } from "child_process";
+import path from "path";
 
-export function runCommands(commands: string[]) {
+export function runCommands(targetRepoPath: string, commands: string[]) {
   commands.forEach((command) => {
-    exec(command, (error, stdout, stderr) => {
+    exec(command, { cwd: path.resolve(targetRepoPath) }, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Error executing command "${command}": ${error.message}`);
+        console.error(`Error executing command "${command}" in "${targetRepoPath}": ${error.message}`);
         return;
       }
       if (stderr) {
-        console.error(`stderr for command "${command}": ${stderr}`);
+        console.error(`stderr for command "${command}" in "${targetRepoPath}": ${stderr}`);
         return;
       }
-      console.log(`stdout for command "${command}": ${stdout}`);
+      console.log(`stdout for command "${command}" in "${targetRepoPath}": ${stdout}`);
     });
   });
 }
