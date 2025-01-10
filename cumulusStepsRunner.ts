@@ -43,7 +43,7 @@ const cumulusSteps = new CumulusSteps(path.resolve(targetRepoPath));
 const steps = cumulusSteps.getSteps();
 console.log("Following steps are added in the list for execution:");
 steps.forEach((step, indx) => {
-  console.log(`  ${indx + 1}. ${step}`);
+  console.log(`  ${(indx + 1).toString().padStart(2, " ")}. ${step}`);
 });
 
 if (nonInteractive) {

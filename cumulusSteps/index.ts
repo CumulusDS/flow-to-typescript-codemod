@@ -10,7 +10,7 @@ import { runCommands } from "./runCommands";
 import { replaceTextInFile } from "./replaceTextInFile";
 import {
   addYarnScript,
-  modifyYarnScript,
+  // modifyYarnScript,
   removeYarnScript,
   replaceInYarnScript,
   modifyJestCollectCoverageFrom,
@@ -67,7 +67,8 @@ export class CumulusSteps {
       runCommands(this.targetRepoPath, ["yarn add eslint-plugin-import --dev"])
     );
 
-    this.addStep("Update build script", () => modifyYarnScript(packageJsonFilePath, "build", "tsc"));
+    // this.addStep("Update build script", () => modifyYarnScript(packageJsonFilePath, "build", "tsc"));
+    this.addStep("Update build script", () => replaceInYarnScript(packageJsonFilePath, "build", "^", "^tsc && "));
 
     this.addStep("Add script to generate flowtypes", () =>
       addYarnScript(
