@@ -35,6 +35,10 @@ export function modifyEslintConfig(filePath: string) {
     eslintConfig.plugins = eslintConfig.plugins.filter((plugin: string) => plugin !== "flowtype");
     eslintConfig.plugins.push("@typescript-eslint");
 
+    // remove parser and parserOptions if previously set
+    delete eslintConfig.parser;
+    delete eslintConfig.parserOptions;
+
     const updatedContent = `module.exports = ${JSON.stringify(eslintConfig, null, 2)};`;
     fs.writeFileSync(filePath, updatedContent, "utf8");
     console.log(`Modified ${filePath} to include suggested changes.`);

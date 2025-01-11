@@ -37,7 +37,15 @@ export class CumulusSteps {
     );
     this.addStep("Update babel config", () => {
       const babelrcFilePath = path.join(this.targetRepoPath, ".babelrc.js");
-      replaceTextInFile(babelrcFilePath, "@babel/preset-flow", "@babel/preset-typescript");
+      const babelConfigFilePath = path.join(this.targetRepoPath, ".babel.config.js");
+      if (babelrcFilePath) {
+        replaceTextInFile(babelrcFilePath, "@babel/preset-flow", "@babel/preset-typescript");
+        return;
+      }
+      if (babelConfigFilePath) {
+        replaceTextInFile(babelConfigFilePath, "@babel/preset-flow", "@babel/preset-typescript");
+        return;
+      }
     });
     this.addStep(
       "Remove babel old dependencies",
@@ -115,6 +123,10 @@ export class CumulusSteps {
 
     this.addStep("Update test:prettier script for .ts extensions", () =>
       replaceInYarnScript(packageJsonFilePath, "test:prettier", "\\.js", ".ts")
+    );
+
+    this.addStep("Add prettier:format script", () =>
+      addYarnScript(packageJsonFilePath, "prettier:format", 'prettier --write "{src,test}/**/*.{ts,tsx}" "*.js"')
     );
 
     this.addStep("Update test:prettier script for .ts extensions", () =>
