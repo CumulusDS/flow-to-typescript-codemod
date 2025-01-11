@@ -28,6 +28,15 @@ yarn typescriptify convert -p ../<target-repo-path> --write --delete
 
 ### :bell: Add the newly created .ts files to Git so they're part of the commit
 
+### :bell: Run cumulus specific steps
+```bash
+yarn cumulusify -t ../cerebro
+``` 
+
+## Manual Steps for reference
+<details>
+  <summary>Click to expand</summary>
+
 ### :bell: add a tsconfig.json file to the target repo
 
 we don't have a standard tsconfig.json checked in anywhere. This one is a reasonable start:
@@ -158,6 +167,9 @@ yarn add eslint-plugin-import --dev
 - update `eslint-config-prettier` to ^8.10.0
 - update `eslint-plugin-prettier` to ^5.2.1
 
+</details>
+
+## Verification
 ### :bell: Review each source file for error/warning markers
 - some projects may need additional dependencies added for types
 
