@@ -14,7 +14,7 @@ There's a lot of GitHub repos here that are no longer used or are planned for im
 
 ### :bell: clone the codemod tool and build the project
 
-Clone this [repo](https://github.com/stripe-archive/flow-to-typescript-codemod) and run yarn install.
+Clone this [repo](https://github.com/cumulusds/flow-to-typescript-codemod) and run yarn install.
 
 ### :bell: Clone the target repo and create a branch off of master
 
