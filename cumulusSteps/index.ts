@@ -97,7 +97,7 @@ export class CumulusSteps {
       addYarnScript(
         packageJsonFilePath,
         "build:flowtypes",
-        "find lib -type f -name '*.d.ts' -exec sh -c 'yarn flowgen --add-flow-header --no-inexact $1 -o ${1%.*.*}.js.flow' _ '{}' \\;"
+        "find lib -type f -name '*.d.ts' ! -path 'lib/src/types/generated/*' -exec sh -c 'yarn flowgen --add-flow-header --no-inexact $1 -o ${1%.*.*}.js.flow' _ '{}' \\;"
       )
     );
 

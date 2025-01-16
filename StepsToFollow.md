@@ -1,5 +1,13 @@
 ## Steps for migrating an existing flow repo to typescript
 
+<div style="border: 2px solid yellow; padding: 10px;">
+
+### ⚠️ **Note!**
+
+### Check Pending Cumulus automation TODOs [here](./TODOs.md), some of these might still require manual modification on top of project specific modifications
+
+</div>
+
 ### :bell: verify the target repo's build is clean
 
 Avoid touching projects with failing builds. 

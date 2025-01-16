@@ -11,6 +11,7 @@ export const tsConfigContent = {
     skipLibCheck: true,
     forceConsistentCasingInFileNames: true,
     outDir: "lib",
+    jsx: "react",
   },
   include: ["src"],
 };
