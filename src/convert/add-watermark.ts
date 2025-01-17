@@ -2,10 +2,7 @@ import traverse from "@babel/traverse";
 import { types } from "recast";
 import * as t from "@babel/types";
 import { TransformerInput } from "./transformer";
-import {
-  addCommentsAtHeadOfNode,
-  addEmptyLineInProgramPath,
-} from "./utils/common";
+import { addCommentsAtHeadOfNode, addEmptyLineInProgramPath } from "./utils/common";
 
 /**
  * Adds a watermark at the top of a file

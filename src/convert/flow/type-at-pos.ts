@@ -38,9 +38,7 @@ export function flowTypeAtPos(
   }
 
   return promise
-    .then((stdOut) =>
-      processFlowTypeAtPosStdout(stdOut, migrationReporter, state, location)
-    )
+    .then((stdOut) => processFlowTypeAtPosStdout(stdOut, migrationReporter, state, location))
     .catch(() => {
       return null;
     });
@@ -86,11 +84,7 @@ function processFlowTypeAtPosQueue() {
     },
     (value) => {
       processFlowTypeAtPosQueue();
-      entry.migrationReporter.flowFailToParse(
-        entry.filePath,
-        entry.location,
-        value as Error
-      );
+      entry.migrationReporter.flowFailToParse(entry.filePath, entry.location, value as Error);
       entry.reject(value);
     }
   );
@@ -146,21 +140,14 @@ function processFlowTypeAtPosStdout(
     const node = (flowType.program.body[0] as t.TypeAlias).right;
 
     // `function f(x: string | any)`
-    if (
-      node.type === "UnionTypeAnnotation" &&
-      node.types.some((unionType) => unionType.type === "AnyTypeAnnotation")
-    ) {
+    if (node.type === "UnionTypeAnnotation" && node.types.some((unionType) => unionType.type === "AnyTypeAnnotation")) {
       migrationReporter.anyFlowType(state.config.filePath, location);
       return null;
     }
 
     return node;
   } catch (e) {
-    migrationReporter.flowFailToParse(
-      state.config.filePath,
-      location,
-      e as Error
-    );
+    migrationReporter.flowFailToParse(state.config.filePath, location, e as Error);
     return null;
   }
 }

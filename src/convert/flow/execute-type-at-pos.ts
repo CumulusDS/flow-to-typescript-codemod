@@ -4,10 +4,7 @@ import * as t from "@babel/types";
 /**
  * Actually executes `flow type-at-pos`. This will be called behind a throttle.
  */
-export async function executeFlowTypeAtPos(
-  filePath: string,
-  location: t.SourceLocation
-): Promise<string> {
+export async function executeFlowTypeAtPos(filePath: string, location: t.SourceLocation): Promise<string> {
   const { line, column } = location.start;
   const command = `$(yarn bin)/flow type-at-pos "${filePath}" ${line} ${
     column + 1

@@ -12,9 +12,7 @@ import {
 jest.mock("../runner/migration-reporter/migration-reporter.ts");
 
 jest.mock("./flow/type-at-pos");
-const mockedFlowTypeAtPos = <jest.MockedFunction<typeof flowTypeAtPos>>(
-  flowTypeAtPos
-);
+const mockedFlowTypeAtPos = <jest.MockedFunction<typeof flowTypeAtPos>>flowTypeAtPos;
 
 describe("parameter inference", () => {
   afterEach(mockedFlowTypeAtPos.mockReset);
@@ -30,9 +28,7 @@ describe("parameter inference", () => {
       const src = `(a, b) => {a + b};`;
       const expected = `(a: unknown, b: unknown) => {a + b};`;
       // mockedFlowTypeAtPos.mockResolvedValue(stringTypeAnnotation());
-      expect(
-        await transform(src, stateBuilder({ config: { disableFlow: true } }))
-      ).toBe(expected);
+      expect(await transform(src, stateBuilder({ config: { disableFlow: true } }))).toBe(expected);
     });
 
     it("provides inference for FunctionDeclarations", async () => {

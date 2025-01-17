@@ -13,8 +13,7 @@ import { ConfigurableTypeProvider } from "./configurable-type-provider";
 import { FixCommandCliArgs } from "../../cli/arguments";
 import { FixCommandState } from "../../fix/state";
 
-const MockedMigrationReporter =
-  MigrationReporter as unknown as jest.Mock<MigrationReporter>;
+const MockedMigrationReporter = MigrationReporter as unknown as jest.Mock<MigrationReporter>;
 
 /**
  * Runs the default set of transforms
@@ -60,11 +59,7 @@ remove the @typescriptify annotation and this comment block.
   return transformRunner(code, state, transforms);
 };
 
-const transformRunner = async (
-  code: string,
-  state: State,
-  transforms: readonly Transformer[]
-) => {
+const transformRunner = async (code: string, state: State, transforms: readonly Transformer[]) => {
   const reporter = new MigrationReporter();
   const file: t.File = recast.parse(code, {
     parser: recastFlowParser,
@@ -75,26 +70,16 @@ const transformRunner = async (
   return recast.print(file, recastOptions).code;
 };
 
-const expectMigrationReporterMethodCalled = (
-  methodName: keyof MigrationReporter
-) => {
+const expectMigrationReporterMethodCalled = (methodName: keyof MigrationReporter) => {
   const didCall = MockedMigrationReporter.mock.instances.some((reporter) => {
-    return (
-      (reporter[methodName] as jest.Mock<MigrationReporter[typeof methodName]>)
-        .mock.calls.length >= 1
-    );
+    return (reporter[methodName] as jest.Mock<MigrationReporter[typeof methodName]>).mock.calls.length >= 1;
   });
   expect(didCall).toBe(true);
 };
 
-const expectMigrationReporterMethodNotCalled = (
-  methodName: keyof MigrationReporter
-) => {
+const expectMigrationReporterMethodNotCalled = (methodName: keyof MigrationReporter) => {
   const didCall = MockedMigrationReporter.mock.instances.some((reporter) => {
-    return (
-      (reporter[methodName] as jest.Mock<MigrationReporter[typeof methodName]>)
-        .mock.calls.length >= 1
-    );
+    return (reporter[methodName] as jest.Mock<MigrationReporter[typeof methodName]>).mock.calls.length >= 1;
   });
   expect(didCall).toBe(false);
 };
@@ -103,14 +88,10 @@ type DeepPartialOverride<T> = {
   [P in keyof T]?: DeepPartialOverride<T[P]>;
 };
 
-type StateLessConfigurableTypeProvider = DeepPartialOverride<
-  Omit<State, "configurableTypeProvider">
-> &
+type StateLessConfigurableTypeProvider = DeepPartialOverride<Omit<State, "configurableTypeProvider">> &
   Partial<Pick<State, "configurableTypeProvider">>;
 
-const stateBuilder = (
-  stateOverrides: StateLessConfigurableTypeProvider = {}
-): State => {
+const stateBuilder = (stateOverrides: StateLessConfigurableTypeProvider = {}): State => {
   const filePath = "./fake/test.js";
   const isTestFile = filePath.endsWith(".test.js");
   const typeProvider =
@@ -142,10 +123,7 @@ const stateBuilder = (
 
 type ResultDictionary = { [filename: string]: string };
 
-export function createOutputRecorder(): [
-  ResultDictionary,
-  (file: SourceFile) => void
-] {
+export function createOutputRecorder(): [ResultDictionary, (file: SourceFile) => void] {
   const results: ResultDictionary = {};
 
   function recordResult(file: SourceFile) {

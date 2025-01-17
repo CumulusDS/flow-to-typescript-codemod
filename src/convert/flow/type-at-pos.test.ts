@@ -3,9 +3,7 @@ import { transform } from "../utils/testing";
 import { executeFlowTypeAtPos } from "./execute-type-at-pos";
 
 jest.mock("./execute-type-at-pos.ts");
-const mockedExecuteFlowTypeAtPos = <
-  jest.MockedFunction<typeof executeFlowTypeAtPos>
->executeFlowTypeAtPos;
+const mockedExecuteFlowTypeAtPos = <jest.MockedFunction<typeof executeFlowTypeAtPos>>executeFlowTypeAtPos;
 
 describe("type at position", () => {
   afterEach(mockedExecuteFlowTypeAtPos.mockReset);
@@ -38,17 +36,13 @@ describe("type at position", () => {
 
   it("does not annotate implicit unknown", async () => {
     const src = `function fn(a) {return a};`;
-    mockedExecuteFlowTypeAtPos.mockResolvedValue(
-      '{"type": "unknown(implicit)"}'
-    );
+    mockedExecuteFlowTypeAtPos.mockResolvedValue('{"type": "unknown(implicit)"}');
     expect(await transform(src)).toBe(src);
   });
 
   it("does not annotate explicit unknown", async () => {
     const src = `function fn(a) {return a};`;
-    mockedExecuteFlowTypeAtPos.mockResolvedValue(
-      '{"type": "unknown(explicit)"}'
-    );
+    mockedExecuteFlowTypeAtPos.mockResolvedValue('{"type": "unknown(explicit)"}');
     expect(await transform(src)).toBe(src);
   });
 

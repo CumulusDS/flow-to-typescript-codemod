@@ -16,19 +16,11 @@ function parentProvidesImplicitType(path: NodePath<t.Node>): boolean {
   const parent = path.parentPath;
   switch (parent?.node.type) {
     case "VariableDeclarator":
-      return (
-        t.isIdentifier(parent.node.id) && parent.node.id.typeAnnotation != null
-      );
+      return t.isIdentifier(parent.node.id) && parent.node.id.typeAnnotation != null;
     case "CallExpression":
-      return (
-        t.isIdentifier(parent.node.callee) &&
-        parent.node.callee.typeAnnotation != null
-      );
+      return t.isIdentifier(parent.node.callee) && parent.node.callee.typeAnnotation != null;
     case "AssignmentExpression":
-      return (
-        t.isIdentifier(parent.node.left) &&
-        parent.node.left.typeAnnotation != null
-      );
+      return t.isIdentifier(parent.node.left) && parent.node.left.typeAnnotation != null;
     case "TSAsExpression":
     case "TypeCastExpression":
     case "ObjectProperty":
@@ -89,9 +81,7 @@ export function annotateParamsWithFlowTypeAtPos(
           // means you can do anything with the type effectively making it any. So
           // treat it as such.
           const tsType =
-            flowType.type === "EmptyTypeAnnotation"
-              ? t.tsAnyKeyword()
-              : migrateType(reporter, state, flowType);
+            flowType.type === "EmptyTypeAnnotation" ? t.tsAnyKeyword() : migrateType(reporter, state, flowType);
 
           // Add the type annotation! Yaay.
           param.typeAnnotation = t.tsTypeAnnotation(tsType);

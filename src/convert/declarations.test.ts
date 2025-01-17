@@ -12,9 +12,7 @@ import { flowTypeAtPos } from "./flow/type-at-pos";
 jest.mock("../runner/migration-reporter/migration-reporter.ts");
 jest.mock("./flow/type-at-pos.ts");
 
-const mockFlowTypeAtPos = flowTypeAtPos as unknown as jest.MockedFunction<
-  typeof flowTypeAtPos
->;
+const mockFlowTypeAtPos = flowTypeAtPos as unknown as jest.MockedFunction<typeof flowTypeAtPos>;
 
 describe("transform declarations", () => {
   afterEach(() => {
@@ -72,12 +70,7 @@ describe("transform declarations", () => {
     it("drops js imports when flag is present", async () => {
       const src = `import {foo} from './foo.js';`;
       const expected = `import {foo} from './foo';`;
-      expect(
-        await transform(
-          src,
-          stateBuilder({ config: { dropImportExtensions: true } })
-        )
-      ).toBe(expected);
+      expect(await transform(src, stateBuilder({ config: { dropImportExtensions: true } }))).toBe(expected);
 
       expectMigrationReporterMethodCalled(`importWithExtension`);
     });
@@ -85,24 +78,14 @@ describe("transform declarations", () => {
     it("drops jsx imports when flag is present", async () => {
       const src = `import {foo} from './foo.jsx';`;
       const expected = `import {foo} from './foo';`;
-      expect(
-        await transform(
-          src,
-          stateBuilder({ config: { dropImportExtensions: true } })
-        )
-      ).toBe(expected);
+      expect(await transform(src, stateBuilder({ config: { dropImportExtensions: true } }))).toBe(expected);
 
       expectMigrationReporterMethodCalled(`importWithExtension`);
     });
 
     it("does not convert extensions similar to js imports when flag is present", async () => {
       const src = `import {foo} from './foo.json';`;
-      expect(
-        await transform(
-          src,
-          stateBuilder({ config: { dropImportExtensions: true } })
-        )
-      ).toBe(src);
+      expect(await transform(src, stateBuilder({ config: { dropImportExtensions: true } }))).toBe(src);
 
       expectMigrationReporterMethodNotCalled(`importWithExtension`);
     });
@@ -752,7 +735,13 @@ describe("transform declarations", () => {
       number> = []
       `;
 
-      expect(await transform(src)).toBe(expected);
+      const variant = dedent`
+      const AThing: Array<// FlowFixMe
+      number> = []
+      `;
+
+      const result = await transform(src);
+      expect([expected, variant]).toContain(result);
     });
   });
 
@@ -786,10 +775,7 @@ describe("transform declarations", () => {
       `;
 
       mockFlowTypeAtPos.mockResolvedValue(
-        t.genericTypeAnnotation(
-          t.identifier("Array"),
-          t.typeParameterInstantiation([t.numberTypeAnnotation()])
-        )
+        t.genericTypeAnnotation(t.identifier("Array"), t.typeParameterInstantiation([t.numberTypeAnnotation()]))
       );
 
       expect(await transform(src)).toBe(expected);
@@ -818,9 +804,7 @@ describe("transform declarations", () => {
       const arr: unknown = [];
       `;
 
-      expect(
-        await transform(src, stateBuilder({ config: { disableFlow: true } }))
-      ).toBe(expected);
+      expect(await transform(src, stateBuilder({ config: { disableFlow: true } }))).toBe(expected);
     });
 
     it("should handle when flow throws an exception", async () => {

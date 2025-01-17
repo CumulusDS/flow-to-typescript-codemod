@@ -6,12 +6,8 @@ import { Diagnostic, ts } from "ts-morph";
  *
  * Feel free to add additional error codes here as you find them.
  */
-export const insuppressibleErrors = new Set([
-  1383, 2304, 2306, 2503, 2578, 4025, 6059, 6307,
-]);
+export const insuppressibleErrors = new Set([1383, 2304, 2306, 2503, 2578, 4025, 6059, 6307]);
 
-export function isDiagnosticSuppressible(
-  diagnostic: Diagnostic<ts.Diagnostic>
-): boolean {
+export function isDiagnosticSuppressible(diagnostic: Diagnostic<ts.Diagnostic>): boolean {
   return !insuppressibleErrors.has(diagnostic.getCode());
 }

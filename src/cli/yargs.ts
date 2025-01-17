@@ -27,23 +27,11 @@ export const parseCommands = (
     .scriptName("typescriptify")
     .version()
     .help()
-    .example(
-      "$0 <setup,convert,fix> --help",
-      "Show usage instructions for a specific command."
-    )
+    .example("$0 <setup,convert,fix> --help", "Show usage instructions for a specific command.")
     .example("$0 convert --path .", "Run the codemod in dry-run mode.")
-    .example(
-      "$0 convert --path src/ test/",
-      "Run the codemod on multiple paths."
-    )
-    .example(
-      "$0 convert --path . --ignore flow_typed/ ",
-      "Ignore files from conversion."
-    )
-    .example(
-      "$0 convert --path ./src --format csv --output ./migration-report.csv",
-      "Generate a CSV migration report."
-    )
+    .example("$0 convert --path src/ test/", "Run the codemod on multiple paths.")
+    .example("$0 convert --path . --ignore flow_typed/ ", "Ignore files from conversion.")
+    .example("$0 convert --path ./src --format csv --output ./migration-report.csv", "Generate a CSV migration report.")
     .example(
       "$0 convert --path . --write --delete",
       "Fully convert a project to TypeScript, writing files and deleting Flow files."
@@ -56,14 +44,8 @@ export const parseCommands = (
       "$0 fix --autoSuppressErrors --removeUnused",
       "Remove unused ts-expect-errors, and add any for current errors."
     )
-    .example(
-      "$0 fix --autoSuppressErrors --jiraSlug JIRA-722",
-      "Suppress errors but add a JIRA slug to the comments."
-    )
-    .example(
-      "$0 fix --generateReport --output ./migration-report.csv",
-      "Generate a CSV file of categorized TS errors."
-    )
+    .example("$0 fix --autoSuppressErrors --jiraSlug JIRA-722", "Suppress errors but add a JIRA slug to the comments.")
+    .example("$0 fix --generateReport --output ./migration-report.csv", "Generate a CSV file of categorized TS errors.")
     .wrap(yargsInstance.terminalWidth())
     .command(
       "setup",
@@ -90,8 +72,7 @@ export const parseCommands = (
           .option("recommendTypeDefinitions", {
             type: "boolean",
             default: false,
-            describe:
-              "Analyze dependencies for this project and recommend type definitions to install.",
+            describe: "Analyze dependencies for this project and recommend type definitions to install.",
           })
           .option("path", {
             type: "string",
@@ -173,14 +154,12 @@ export const parseCommands = (
           .option("watermark", {
             type: "boolean",
             default: false,
-            describe:
-              "Add a watermark to the top of generated typescript files.",
+            describe: "Add a watermark to the top of generated typescript files.",
           })
           .option("tag", {
             type: "string",
             default: DEFAULT_WATERMARK_TAG,
-            describe:
-              "The top line tag used in the watermark. Only used if watermark is enabled.",
+            describe: "The top line tag used in the watermark. Only used if watermark is enabled.",
           })
           .option("message", {
             type: "string",
@@ -232,8 +211,7 @@ export const parseCommands = (
           .option("stripPathsForIgnore", {
             type: "boolean",
             default: false,
-            describe:
-              "Strip any leading relative parts when passing paths to ignore.",
+            describe: "Strip any leading relative parts when passing paths to ignore.",
           })
           .option("convertUnannotated", {
             type: "boolean",
@@ -269,8 +247,7 @@ export const parseCommands = (
           .option("autoSuppressErrors", {
             type: "boolean",
             default: false,
-            describe:
-              "Auto suppress any TypeScript errors with a ts-expect-error comment containing the error.",
+            describe: "Auto suppress any TypeScript errors with a ts-expect-error comment containing the error.",
           })
           .option("generateReport", {
             type: "boolean",
@@ -280,14 +257,12 @@ export const parseCommands = (
           .option("jiraSlug", {
             type: "string",
             default: "",
-            description:
-              "Jira slug to use for suppression comments. E.g JIRA-711",
+            description: "Jira slug to use for suppression comments. E.g JIRA-711",
           })
           .option("useIgnore", {
             type: "boolean",
             default: false,
-            describe:
-              "Auto suppress any TypeScript errors with a ts-ignore, instead of ts-expect-error",
+            describe: "Auto suppress any TypeScript errors with a ts-ignore, instead of ts-expect-error",
           })
           .option("removeUnused", {
             type: "boolean",
@@ -297,8 +272,7 @@ export const parseCommands = (
           .option("config", {
             type: "string",
             default: "./tsconfig.json",
-            describe:
-              "Specify the tsconfig to be used for the fix command, if different from the default.",
+            describe: "Specify the tsconfig to be used for the fix command, if different from the default.",
           })
           .option("autoImport", {
             type: "boolean",
@@ -308,8 +282,7 @@ export const parseCommands = (
           .option("fixTypeExports", {
             type: "boolean",
             default: false,
-            describe:
-              "Experimental: Fix exported types to use type-only exports, to fix isolatedModules errors.",
+            describe: "Experimental: Fix exported types to use type-only exports, to fix isolatedModules errors.",
           });
       },
       fix

@@ -67,12 +67,7 @@ export function findFlowFilesAsync(
         }
         // Process every file name that we got from reading the directory.
         for (let i = 0; i < fileNames.length; i++) {
-          processFilePath(
-            directory,
-            fileNames[i],
-            reporter,
-            stripPathsForIgnore
-          );
+          processFilePath(directory, fileNames[i], reporter, stripPathsForIgnore);
         }
         // We are done with this async task.
         done();
@@ -98,9 +93,7 @@ export function findFlowFilesAsync(
       // Get the file path for this file.
       const filePath = path.join(directory, fileName);
       // ignore doesn't handle relative paths, so strip them. This does not work in all edge cases so is behind a flag
-      const correctedPath = stripPathsForIgnore
-        ? filePath.replace(/^(?:\.\.\/)+/, "")
-        : filePath;
+      const correctedPath = stripPathsForIgnore ? filePath.replace(/^(?:\.\.\/)+/, "") : filePath;
       // ensure that path is valid so that ignore check doesn't throw
       if (ignore.isPathValid(correctedPath) && ig.ignores(correctedPath)) {
         done();
@@ -134,11 +127,7 @@ export function findFlowFilesAsync(
      * Check if a file path really is a Flow file by looking for the @flow
      * header pragma.
      */
-    function processJavaScriptFilePath(
-      filePath: string,
-      fileByteSize: number,
-      reporter: MigrationReporter
-    ) {
+    function processJavaScriptFilePath(filePath: string, fileByteSize: number, reporter: MigrationReporter) {
       // If we were rejected then we should not continue.
       if (rejected === true) {
         return;

@@ -4,10 +4,7 @@ import { TransformerInput } from "../transformer";
 import { componentsWithSpreads } from "./components-with-spreads";
 import { getLoc } from "../utils/common";
 
-const classExtendsReactComponent = ({
-  superClass,
-  superTypeParameters,
-}: t.ClassDeclaration) => {
+const classExtendsReactComponent = ({ superClass, superTypeParameters }: t.ClassDeclaration) => {
   return (
     t.isMemberExpression(superClass) &&
     t.isIdentifier(superClass.object) &&
@@ -38,43 +35,38 @@ function getNewPropsType(propParam: t.TSType, componentSpreads: t.TSType[]) {
 /**
  * Navigate a functional component to detect spreads
  */
-const functionalVisitor: VisitNodeFunction<
-  TransformerInput,
-  t.FunctionDeclaration | t.ArrowFunctionExpression
-> = function (path) {
-  const { node } = path;
+const functionalVisitor: VisitNodeFunction<TransformerInput, t.FunctionDeclaration | t.ArrowFunctionExpression> =
+  function (path) {
+    const { node } = path;
 
-  if (node.params.length === 0) {
-    return;
-  }
+    if (node.params.length === 0) {
+      return;
+    }
 
-  const [propsParam] = node.params;
+    const [propsParam] = node.params;
 
-  if (!t.isIdentifier(propsParam)) {
-    return;
-  }
+    if (!t.isIdentifier(propsParam)) {
+      return;
+    }
 
-  if (!t.isTSTypeAnnotation(propsParam.typeAnnotation)) {
-    return;
-  }
+    if (!t.isTSTypeAnnotation(propsParam.typeAnnotation)) {
+      return;
+    }
 
-  const localComponentsWithSpreads = componentsWithSpreads(
-    path,
-    propsParam.name
-  );
+    const localComponentsWithSpreads = componentsWithSpreads(path, propsParam.name);
 
-  if (localComponentsWithSpreads.length === 0) {
-    return;
-  }
+    if (localComponentsWithSpreads.length === 0) {
+      return;
+    }
 
-  this.state.usedUtils = true;
-  this.reporter.usedJSXSpread(this.state.config.filePath, getLoc(node));
+    this.state.usedUtils = true;
+    this.reporter.usedJSXSpread(this.state.config.filePath, getLoc(node));
 
-  propsParam.typeAnnotation.typeAnnotation = getNewPropsType(
-    propsParam.typeAnnotation.typeAnnotation,
-    localComponentsWithSpreads
-  );
-};
+    propsParam.typeAnnotation.typeAnnotation = getNewPropsType(
+      propsParam.typeAnnotation.typeAnnotation,
+      localComponentsWithSpreads
+    );
+  };
 
 /**
  * In Flow, objects are inexact by default including React component props.
@@ -110,9 +102,7 @@ export function transformJsxSpread(transformerInput: TransformerInput) {
           path.traverse(
             {
               ClassMethod(path) {
-                this.componentsWithSpreads.push(
-                  ...componentsWithSpreads(path, "this.props")
-                );
+                this.componentsWithSpreads.push(...componentsWithSpreads(path, "this.props"));
               },
             },
             componentState
@@ -136,10 +126,7 @@ export function transformJsxSpread(transformerInput: TransformerInput) {
           this.state.usedUtils = true;
           this.reporter.usedJSXSpread(this.state.config.filePath, getLoc(node));
 
-          node.superTypeParameters.params[0] = getNewPropsType(
-            propParam,
-            componentState.componentsWithSpreads
-          );
+          node.superTypeParameters.params[0] = getNewPropsType(propParam, componentState.componentsWithSpreads);
         },
       },
       FunctionDeclaration: functionalVisitor,

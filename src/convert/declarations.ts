@@ -9,10 +9,7 @@ import {
   getLoc,
 } from "./utils/common";
 import { migrateType } from "./migrate/type";
-import {
-  migrateTypeParameterDeclaration,
-  migrateTypeParameterInstantiation,
-} from "./migrate/type-parameter";
+import { migrateTypeParameterDeclaration, migrateTypeParameterInstantiation } from "./migrate/type-parameter";
 import { migrateQualifiedIdentifier } from "./migrate/qualified-identifier";
 import { annotateParamsWithFlowTypeAtPos } from "./flow/annotate-params";
 import { functionVisitor } from "./function-visitor";
@@ -23,22 +20,15 @@ import { flowTypeAtPos } from "./flow/type-at-pos";
 /**
  * Rename React imports for TypeScript
  */
-const updateReactImports = (
-  node: t.ImportDeclaration,
-  specifier: t.ImportSpecifier
-) => {
-  if (
-    node.source.value === "react" &&
-    (specifier.importKind === "type" || node.importKind === "type")
-  ) {
+const updateReactImports = (node: t.ImportDeclaration, specifier: t.ImportSpecifier) => {
+  if (node.source.value === "react" && (specifier.importKind === "type" || node.importKind === "type")) {
     // `import type {Node} from 'react'` => `import {ReactNode} from 'react'`
     if (
       specifier.type === "ImportSpecifier" &&
       specifier.imported.type === "Identifier" &&
       specifier.imported.name in ReactTypes
     ) {
-      specifier.imported.name =
-        ReactTypes[specifier.imported.name as keyof typeof ReactTypes];
+      specifier.imported.name = ReactTypes[specifier.imported.name as keyof typeof ReactTypes];
     }
     // `import {type Node} from 'react'` => `import {ReactNode} from 'react'`
     if (
@@ -46,8 +36,7 @@ const updateReactImports = (
       specifier.local.type === "Identifier" &&
       specifier.local.name in ReactTypes
     ) {
-      specifier.local.name =
-        ReactTypes[specifier.local.name as keyof typeof ReactTypes];
+      specifier.local.name = ReactTypes[specifier.local.name as keyof typeof ReactTypes];
     }
     // `import type {ReactNode as ReactNode} from 'react'` => `import {ReactNode} from 'react'`
     if (
@@ -62,11 +51,7 @@ const updateReactImports = (
   }
 };
 
-export function transformDeclarations({
-  reporter,
-  state,
-  file,
-}: TransformerInput): Promise<unknown> {
+export function transformDeclarations({ reporter, state, file }: TransformerInput): Promise<unknown> {
   const awaitPromises: Array<Promise<unknown>> = [];
 
   traverse(file, {
@@ -82,11 +67,7 @@ export function transformDeclarations({
         const isJS = value.endsWith(".js");
         const isJSX = value.endsWith(".jsx");
         if (isJS || isJSX) {
-          reporter.importWithExtension(
-            state.config.filePath,
-            getLoc(path.node),
-            value
-          );
+          reporter.importWithExtension(state.config.filePath, getLoc(path.node), value);
         }
 
         if (state.config.dropImportExtensions) {
@@ -117,9 +98,7 @@ export function transformDeclarations({
         return;
       }
 
-      throw new Error(
-        `Unrecognized import kind: ${JSON.stringify(path.node.importKind)}`
-      );
+      throw new Error(`Unrecognized import kind: ${JSON.stringify(path.node.importKind)}`);
     },
 
     ExportAllDeclaration(path) {
@@ -131,13 +110,7 @@ export function transformDeclarations({
         path,
         t.tsTypeAliasDeclaration(
           path.node.id,
-          path.node.typeParameters
-            ? migrateTypeParameterDeclaration(
-                reporter,
-                state,
-                path.node.typeParameters
-              )
-            : null,
+          path.node.typeParameters ? migrateTypeParameterDeclaration(reporter, state, path.node.typeParameters) : null,
           migrateType(reporter, state, path.node.right)
         ),
         state.config.filePath,
@@ -157,13 +130,7 @@ export function transformDeclarations({
         path,
         t.tsTypeAliasDeclaration(
           path.node.id,
-          path.node.typeParameters
-            ? migrateTypeParameterDeclaration(
-                reporter,
-                state,
-                path.node.typeParameters
-              )
-            : null,
+          path.node.typeParameters ? migrateTypeParameterDeclaration(reporter, state, path.node.typeParameters) : null,
           migrateType(reporter, state, path.node.impltype)
         ),
         state.config.filePath,
@@ -172,17 +139,12 @@ export function transformDeclarations({
     },
 
     InterfaceDeclaration(path) {
-      if (path.node.mixins && path.node.mixins.length > 0)
-        throw new Error("Interface `mixins` are unsupported.");
+      if (path.node.mixins && path.node.mixins.length > 0) throw new Error("Interface `mixins` are unsupported.");
       if (path.node.implements && path.node.implements.length > 0)
         throw new Error("Interface `implements` are unsupported.");
 
       const typeParameters = path.node.typeParameters
-        ? migrateTypeParameterDeclaration(
-            reporter,
-            state,
-            path.node.typeParameters
-          )
+        ? migrateTypeParameterDeclaration(reporter, state, path.node.typeParameters)
         : null;
 
       const extends_ = path.node.extends
@@ -190,11 +152,7 @@ export function transformDeclarations({
             const tsExtends = t.tsExpressionWithTypeArguments(
               migrateQualifiedIdentifier(flowExtends.id),
               flowExtends.typeParameters
-                ? migrateTypeParameterInstantiation(
-                    reporter,
-                    state,
-                    flowExtends.typeParameters
-                  )
+                ? migrateTypeParameterInstantiation(reporter, state, flowExtends.typeParameters)
                 : null
             );
             inheritLocAndComments(flowExtends, tsExtends);
@@ -205,17 +163,11 @@ export function transformDeclarations({
       const body = migrateType(reporter, state, path.node.body, {
         isInterfaceBody: true,
       });
-      if (!t.isTSTypeLiteral(body))
-        throw new Error(`Unexpected AST node: ${JSON.stringify(body.type)}`);
+      if (!t.isTSTypeLiteral(body)) throw new Error(`Unexpected AST node: ${JSON.stringify(body.type)}`);
 
       replaceWith(
         path,
-        t.tsInterfaceDeclaration(
-          path.node.id,
-          typeParameters,
-          extends_,
-          t.tsInterfaceBody(body.members)
-        ),
+        t.tsInterfaceDeclaration(path.node.id, typeParameters, extends_, t.tsInterfaceBody(body.members)),
         state.config.filePath,
         reporter
       );
@@ -233,16 +185,10 @@ export function transformDeclarations({
 
         // this tuple is not literally len(2) but rather is an n-dimensional tuple based on the length of the supplied array
         const tupleTypes = path.node.elements.map((node) => {
-          if (
-            node?.type === "Identifier" &&
-            t.isTypeAnnotation(node.typeAnnotation)
-          ) {
+          if (node?.type === "Identifier" && t.isTypeAnnotation(node.typeAnnotation)) {
             const originalType = node.typeAnnotation.typeAnnotation;
             if (!isInsideFunction) {
-              reporter.invalidArrayPatternType(
-                state.config.filePath,
-                getLoc(node)
-              );
+              reporter.invalidArrayPatternType(state.config.filePath, getLoc(node));
             }
             node.typeAnnotation = null;
             return migrateType(reporter, state, originalType);
@@ -252,9 +198,7 @@ export function transformDeclarations({
         });
 
         if (isInsideFunction) {
-          path.node.typeAnnotation = t.tsTypeAnnotation(
-            t.tsTupleType(tupleTypes)
-          );
+          path.node.typeAnnotation = t.tsTypeAnnotation(t.tsTupleType(tupleTypes));
         }
       },
     },
@@ -270,17 +214,11 @@ export function transformDeclarations({
       ) {
         // `let x = {};` → `let x: Record<string, any> = {};`
         // If assigning an empty object literal, typescript cannot correct infer the type.
-        if (
-          path.node.init?.type === "ObjectExpression" &&
-          path.node.init.properties.length === 0
-        ) {
+        if (path.node.init?.type === "ObjectExpression" && path.node.init.properties.length === 0) {
           path.node.id.typeAnnotation = t.tsTypeAnnotation(
             t.tsTypeReference(
               t.identifier("Record"),
-              t.tsTypeParameterInstantiation([
-                t.tsStringKeyword(),
-                t.tsAnyKeyword(),
-              ])
+              t.tsTypeParameterInstantiation([t.tsStringKeyword(), t.tsAnyKeyword()])
             )
           );
         } else if (state.config.isTestFile) {
@@ -290,15 +228,9 @@ export function transformDeclarations({
           // lower levels of soundness in test files. We’ll manually annotate non-test files.
           if (path.node.init === null) {
             path.node.id.typeAnnotation = t.tsTypeAnnotation(t.tsAnyKeyword());
-          } else if (
-            path.node.init?.type === "ArrayExpression" &&
-            path.node.init.elements.length === 0
-          ) {
+          } else if (path.node.init?.type === "ArrayExpression" && path.node.init.elements.length === 0) {
             path.node.id.typeAnnotation = t.tsTypeAnnotation(
-              t.tsTypeReference(
-                t.identifier("Array"),
-                t.tsTypeParameterInstantiation([t.tsAnyKeyword()])
-              )
+              t.tsTypeReference(t.identifier("Array"), t.tsTypeParameterInstantiation([t.tsAnyKeyword()]))
             );
           }
         }
@@ -310,9 +242,7 @@ export function transformDeclarations({
         ) {
           if (state.config.disableFlow) {
             // If flow is disabled, then we don't know, so mark it as unknown.
-            (path.node.id as t.Identifier).typeAnnotation = t.tsTypeAnnotation(
-              t.tsUnknownKeyword()
-            );
+            (path.node.id as t.Identifier).typeAnnotation = t.tsTypeAnnotation(t.tsUnknownKeyword());
             reporter.disableFlowCheck(state.config.filePath, path.node.id.loc!);
           } else {
             // Ask Flow for the type of our array.
@@ -326,13 +256,10 @@ export function transformDeclarations({
                   // means you can do anything with the type effectively making it any. So
                   // treat it as such.
                   const tsType =
-                    flowType.type === "EmptyTypeAnnotation"
-                      ? t.tsAnyKeyword()
-                      : migrateType(reporter, state, flowType);
+                    flowType.type === "EmptyTypeAnnotation" ? t.tsAnyKeyword() : migrateType(reporter, state, flowType);
 
                   // Typescript loses the type check on L#299 here, so we're just putting it back.
-                  (path.node.id as t.Identifier).typeAnnotation =
-                    t.tsTypeAnnotation(tsType);
+                  (path.node.id as t.Identifier).typeAnnotation = t.tsTypeAnnotation(tsType);
                 })
                 .catch((err) => {
                   reporter.error(state.config.filePath, err);
@@ -345,14 +272,9 @@ export function transformDeclarations({
       // If we're exporting a constant Object or Array, there's a good chance it can be annotated 'as const'
       // which allows it to be used in type definitions easier.
       // If it is not an empty object, and is not already annotated.
-      const isExported =
-        path.parentPath.parent.type === "ExportNamedDeclaration";
-      const isConstDeclaration =
-        path.parent.type === "VariableDeclaration" &&
-        path.parent.kind === "const";
-      const isObjectDeclaration =
-        path.node.init?.type === "ObjectExpression" &&
-        path.node.init.properties.length > 0;
+      const isExported = path.parentPath.parent.type === "ExportNamedDeclaration";
+      const isConstDeclaration = path.parent.type === "VariableDeclaration" && path.parent.kind === "const";
+      const isObjectDeclaration = path.node.init?.type === "ObjectExpression" && path.node.init.properties.length > 0;
       const isArrayDeclaration =
         path.node.init?.type === "ArrayExpression" &&
         path.node.init.elements.length > 0 &&
@@ -362,15 +284,8 @@ export function transformDeclarations({
         path.node.id.type === "Identifier" &&
         path.node.id.typeAnnotation !== undefined &&
         path.node.id.typeAnnotation !== null;
-      if (
-        isConstDeclaration &&
-        (isObjectDeclaration || (isExported && isArrayDeclaration)) &&
-        !hasTypeAnnotation
-      ) {
-        const asExpression = t.tsAsExpression(
-          path.node.init as t.Expression,
-          t.tsTypeReference(t.identifier("const"))
-        );
+      if (isConstDeclaration && (isObjectDeclaration || (isExported && isArrayDeclaration)) && !hasTypeAnnotation) {
+        const asExpression = t.tsAsExpression(path.node.init as t.Expression, t.tsTypeReference(t.identifier("const")));
         inheritLocAndComments(path.node.init as t.Expression, asExpression);
         path.node.init = asExpression;
       }
@@ -386,30 +301,15 @@ export function transformDeclarations({
       ) {
         const call = path.node.init;
         const member = path.node.init.callee;
-        const isReact =
-          t.isIdentifier(member.object) && member.object.name === "React";
-        const isUseState =
-          t.isIdentifier(member.property) &&
-          member.property.name === "useState";
+        const isReact = t.isIdentifier(member.object) && member.object.name === "React";
+        const isUseState = t.isIdentifier(member.property) && member.property.name === "useState";
         const noInitialValue = call.arguments.length === 0;
-        const nullInitialValue =
-          call.arguments.length === 1 && t.isNullLiteral(call.arguments[0]);
+        const nullInitialValue = call.arguments.length === 1 && t.isNullLiteral(call.arguments[0]);
         const undefinedInitialValue =
-          call.arguments.length === 1 &&
-          t.isIdentifier(call.arguments[0]) &&
-          call.arguments[0].name === "undefined";
-        if (
-          isReact &&
-          isUseState &&
-          (noInitialValue || nullInitialValue || undefinedInitialValue)
-        ) {
-          reporter.untypedStateInitialization(
-            state.config.filePath,
-            getLoc(path.node)
-          );
-          path.node.init.typeParameters = t.tsTypeParameterInstantiation([
-            t.tsAnyKeyword(),
-          ]);
+          call.arguments.length === 1 && t.isIdentifier(call.arguments[0]) && call.arguments[0].name === "undefined";
+        if (isReact && isUseState && (noInitialValue || nullInitialValue || undefinedInitialValue)) {
+          reporter.untypedStateInitialization(state.config.filePath, getLoc(path.node));
+          path.node.init.typeParameters = t.tsTypeParameterInstantiation([t.tsAnyKeyword()]);
         }
       }
     },
@@ -431,11 +331,7 @@ export function transformDeclarations({
 
       if (t.isIdentifier(node.param)) {
         const { param } = node;
-        node.param = buildTSIdentifier(
-          param.name,
-          false,
-          t.tsTypeAnnotation(t.tsAnyKeyword())
-        );
+        node.param = buildTSIdentifier(param.name, false, t.tsTypeAnnotation(t.tsAnyKeyword()));
       }
     },
 
@@ -464,13 +360,11 @@ export function transformDeclarations({
 
         const nullSecondParam =
           node.superTypeParameters.params.length === 2 &&
-          node.superTypeParameters.params[1].type ===
-            "NullLiteralTypeAnnotation";
+          node.superTypeParameters.params[1].type === "NullLiteralTypeAnnotation";
 
         // React.Component<Props, null> -> React.Component<Props> (null makes it invalid JSX)
         if (isReactComponent && nullSecondParam) {
-          node.superTypeParameters.params =
-            node.superTypeParameters.params.slice(0, 1);
+          node.superTypeParameters.params = node.superTypeParameters.params.slice(0, 1);
         }
 
         // Process the type parameters
@@ -484,13 +378,7 @@ export function transformDeclarations({
     ObjectMethod(path) {
       // Add Flow’s inferred type for all unannotated function parameters if inside a react class
       awaitPromises.push(
-        annotateParamsWithFlowTypeAtPos(
-          reporter,
-          state,
-          path.node.params,
-          path,
-          isInsideCreateReactClass(path)
-        )
+        annotateParamsWithFlowTypeAtPos(reporter, state, path.node.params, path, isInsideCreateReactClass(path))
       );
     },
   });

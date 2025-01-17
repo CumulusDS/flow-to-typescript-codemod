@@ -31,12 +31,7 @@ describe("transform spread JSX attributes", () => {
       return <Mine it={it} {...rest} />
     }`;
 
-    expect(
-      await transform(
-        src,
-        stateBuilder({ config: { convertJSXSpreads: true } })
-      )
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { convertJSXSpreads: true } }))).toBe(expected);
     expectMigrationReporterMethodCalled("usedJSXSpread");
   });
 
@@ -60,12 +55,7 @@ describe("transform spread JSX attributes", () => {
       return <Mine it={it} {...rest} />
     }`;
 
-    expect(
-      await transform(
-        src,
-        stateBuilder({ config: { convertJSXSpreads: true } })
-      )
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { convertJSXSpreads: true } }))).toBe(expected);
     expectMigrationReporterMethodCalled("usedJSXSpread");
   });
 
@@ -97,12 +87,7 @@ describe("transform spread JSX attributes", () => {
       return <Mine {...rest} />
     }`;
 
-    expect(
-      await transform(
-        src,
-        stateBuilder({ config: { convertJSXSpreads: true } })
-      )
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { convertJSXSpreads: true } }))).toBe(expected);
     expectMigrationReporterMethodCalled("usedJSXSpread");
   });
 
@@ -133,12 +118,7 @@ describe("transform spread JSX attributes", () => {
       }
     }`;
 
-    expect(
-      await transform(
-        src,
-        stateBuilder({ config: { convertJSXSpreads: true } })
-      )
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { convertJSXSpreads: true } }))).toBe(expected);
     expectMigrationReporterMethodCalled("usedJSXSpread");
   });
 
@@ -169,12 +149,7 @@ describe("transform spread JSX attributes", () => {
       }
     }`;
 
-    expect(
-      await transform(
-        src,
-        stateBuilder({ config: { convertJSXSpreads: true } })
-      )
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { convertJSXSpreads: true } }))).toBe(expected);
     expectMigrationReporterMethodCalled("usedJSXSpread");
   });
 
@@ -204,12 +179,7 @@ describe("transform spread JSX attributes", () => {
       }
     }`;
 
-    expect(
-      await transform(
-        src,
-        stateBuilder({ config: { convertJSXSpreads: false } })
-      )
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { convertJSXSpreads: false } }))).toBe(expected);
   });
 
   it("should not lose State typings for class components", async () => {
@@ -243,12 +213,7 @@ describe("transform spread JSX attributes", () => {
       }
     }`;
 
-    expect(
-      await transform(
-        src,
-        stateBuilder({ config: { convertJSXSpreads: true } })
-      )
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { convertJSXSpreads: true } }))).toBe(expected);
     expectMigrationReporterMethodCalled("usedJSXSpread");
   });
 
@@ -272,12 +237,7 @@ describe("transform spread JSX attributes", () => {
       return <Mine {...rest} />
     }`;
 
-    expect(
-      await transform(
-        src,
-        stateBuilder({ config: { convertJSXSpreads: true } })
-      )
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { convertJSXSpreads: true } }))).toBe(expected);
     expectMigrationReporterMethodCalled("usedJSXSpread");
   });
 
@@ -302,12 +262,7 @@ describe("transform spread JSX attributes", () => {
       return <El it={it} {...rest} />
     }`;
 
-    expect(
-      await transform(
-        src,
-        stateBuilder({ config: { convertJSXSpreads: true } })
-      )
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { convertJSXSpreads: true } }))).toBe(expected);
     expectMigrationReporterMethodNotCalled("usedJSXSpread");
   });
 });

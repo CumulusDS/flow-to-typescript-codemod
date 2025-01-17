@@ -1,10 +1,6 @@
 import dedent from "dedent";
 import { JEST_MOCK_METHODS } from "./utils/common";
-import {
-  transform,
-  expectMigrationReporterMethodCalled,
-  stateBuilder,
-} from "./utils/testing";
+import { transform, expectMigrationReporterMethodCalled, stateBuilder } from "./utils/testing";
 
 jest.mock("../runner/migration-reporter/migration-reporter.ts");
 
@@ -77,9 +73,7 @@ describe("transform expressions", () => {
     const test = <T extends unknown>(value: T): TestType<T> => ({
       foo: 'bar'
     });`;
-    expect(
-      await transform(src, stateBuilder({ config: { forceTSX: true } }))
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { forceTSX: true } }))).toBe(expected);
   });
 
   it("does not add extends to ambiguous type params when no JSX present and not forcing TSX", async () => {
@@ -88,9 +82,7 @@ describe("transform expressions", () => {
       foo: 'bar'
     });
     `;
-    expect(
-      await transform(src, stateBuilder({ config: { forceTSX: false } }))
-    ).toBe(src);
+    expect(await transform(src, stateBuilder({ config: { forceTSX: false } }))).toBe(src);
   });
 
   it("adds extends to multiple ambiguous type parameters that could be JSX", async () => {

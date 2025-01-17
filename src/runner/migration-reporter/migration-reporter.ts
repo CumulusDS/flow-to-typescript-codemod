@@ -93,10 +93,7 @@ class MigrationReporter {
     };
   }
 
-  static async logReport(
-    report: MigrationReport,
-    ...formatters: MigrationReportFormatter[]
-  ) {
+  static async logReport(report: MigrationReport, ...formatters: MigrationReportFormatter[]) {
     for (const formatter of formatters) {
       // eslint-disable-next-line no-await-in-loop
       await formatter(report);
@@ -155,10 +152,7 @@ class MigrationReporter {
     );
   }
 
-  objectPropertyWithMinusVariance(
-    filePath: string,
-    location: t.SourceLocation
-  ) {
+  objectPropertyWithMinusVariance(filePath: string, location: t.SourceLocation) {
     this.log(
       MigrationReportItemType.objectPropertyWithMinusVariance,
       MigrationReportItemSeverity.warn,
@@ -219,10 +213,7 @@ class MigrationReporter {
     );
   }
 
-  usedJSXSpread(
-    filePath: string,
-    location: t.SourceLocation | null | undefined
-  ) {
+  usedJSXSpread(filePath: string, location: t.SourceLocation | null | undefined) {
     this.log(
       MigrationReportItemType.usedJSXSpread,
       MigrationReportItemSeverity.info,
@@ -291,11 +282,7 @@ class MigrationReporter {
     );
   }
 
-  importWithExtension(
-    filePath: string,
-    location: t.SourceLocation,
-    source: string
-  ) {
+  importWithExtension(filePath: string, location: t.SourceLocation, source: string) {
     this.log(
       MigrationReportItemType.importWithExtension,
       MigrationReportItemSeverity.warn,
@@ -397,11 +384,7 @@ class MigrationReporter {
     );
   }
 
-  asyncFunctionReturnType(
-    filePath: string,
-    location: t.SourceLocation,
-    idName: string
-  ) {
+  asyncFunctionReturnType(filePath: string, location: t.SourceLocation, idName: string) {
     this.log(
       MigrationReportItemType.asyncFunctionReturnType,
       MigrationReportItemSeverity.info,
@@ -411,10 +394,7 @@ class MigrationReporter {
     );
   }
 
-  requiredPropInOptionalAssignment(
-    filePath: string,
-    location: t.SourceLocation
-  ) {
+  requiredPropInOptionalAssignment(filePath: string, location: t.SourceLocation) {
     this.log(
       MigrationReportItemType.requiredPropInOptionalAssignment,
       MigrationReportItemSeverity.warn,
@@ -456,12 +436,7 @@ class MigrationReporter {
     );
   }
 
-  invalidHTMLProp(
-    filePath: string,
-    line: number,
-    tagName: string,
-    propertyName: string
-  ) {
+  invalidHTMLProp(filePath: string, line: number, tagName: string, propertyName: string) {
     this.log(
       MigrationReportItemType.invalidHtmlProp,
       MigrationReportItemSeverity.warn,
@@ -512,12 +487,7 @@ class MigrationReporter {
     );
   }
 
-  unhandledFlowInputNode(
-    filePath: string,
-    location: t.SourceLocation,
-    nodeIdentifier: string,
-    nodeType: string
-  ) {
+  unhandledFlowInputNode(filePath: string, location: t.SourceLocation, nodeIdentifier: string, nodeType: string) {
     this.log(
       MigrationReportItemType.unhandledFlowInputNode,
       MigrationReportItemSeverity.error,
@@ -557,11 +527,7 @@ class MigrationReporter {
     );
   }
 
-  migrateSnapFile(
-    filePath: string,
-    originalSnapPath: string,
-    newSnapPath: string
-  ) {
+  migrateSnapFile(filePath: string, originalSnapPath: string, newSnapPath: string) {
     this.log(
       MigrationReportItemType.migrateSnapFile,
       MigrationReportItemSeverity.info,

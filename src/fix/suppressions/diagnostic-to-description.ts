@@ -3,9 +3,7 @@ import { Diagnostic, DiagnosticMessageChain } from "ts-morph";
 /**
  * Detect chains of errors, vs a single error
  */
-function isDiagnosticMessageChain(
-  message: string | DiagnosticMessageChain
-): message is DiagnosticMessageChain {
+function isDiagnosticMessageChain(message: string | DiagnosticMessageChain): message is DiagnosticMessageChain {
   return typeof message !== "string";
 }
 

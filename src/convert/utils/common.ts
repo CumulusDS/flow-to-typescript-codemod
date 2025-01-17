@@ -128,10 +128,7 @@ export function isComplexLiteral(expression: t.Expression): boolean {
         if (property.computed && !isComplexLiteral(property.key)) {
           return false;
         }
-        if (
-          t.isExpression(property.value) &&
-          !isComplexLiteral(property.value)
-        ) {
+        if (t.isExpression(property.value) && !isComplexLiteral(property.value)) {
           return false;
         }
       }
@@ -188,7 +185,7 @@ export function addCommentsAtHeadOfNode(
 }
 
 export function addEmptyLineInProgramPath(path: NodePath<t.Program>) {
-  path.unshiftContainer("body", t.noop());
+  path.unshiftContainer("body", t.emptyStatement());
 }
 
 /**
@@ -197,12 +194,7 @@ export function addEmptyLineInProgramPath(path: NodePath<t.Program>) {
  *
  * https://github.com/benjamn/recast/issues/572
  */
-export function replaceWith(
-  path: NodePath<t.Node>,
-  node: t.Node,
-  filePath: string,
-  reporter: MigrationReporter
-) {
+export function replaceWith(path: NodePath<t.Node>, node: t.Node, filePath: string, reporter: MigrationReporter) {
   inheritLocAndComments(path.node, node);
   try {
     path.replaceWith(node);
@@ -215,9 +207,7 @@ export function replaceWith(
 /**
  * Tries to return the nearest LOC, and returns a default if not found.
  */
-export function getLoc<TNodeType extends t.Node>(
-  node: TNodeType
-): t.SourceLocation {
+export function getLoc<TNodeType extends t.Node>(node: TNodeType): t.SourceLocation {
   return (
     node.loc ??
     (node as t.FunctionDeclaration).body?.loc ?? {

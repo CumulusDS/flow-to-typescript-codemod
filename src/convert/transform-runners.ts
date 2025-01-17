@@ -18,44 +18,30 @@ const standardTransformRunnerFactory = (transformer: Transformer) => {
   };
 };
 
-export const hasJsxTransformRunner: Transformer<void> = (
-  transformerInput: TransformerInput
-) => {
+export const hasJsxTransformRunner: Transformer<void> = (transformerInput: TransformerInput) => {
   transformerInput.state.hasJsx = hasJSX(transformerInput);
 };
 
-export const privateTypeTransformRunner: Transformer =
-  standardTransformRunnerFactory(transformPrivateTypes);
+export const privateTypeTransformRunner: Transformer = standardTransformRunnerFactory(transformPrivateTypes);
 
-export const expressionTransformRunner: Transformer =
-  standardTransformRunnerFactory(transformExpressions);
+export const expressionTransformRunner: Transformer = standardTransformRunnerFactory(transformExpressions);
 
-export const jsxTransformRunner: Transformer =
-  standardTransformRunnerFactory(transformJSX);
+export const jsxTransformRunner: Transformer = standardTransformRunnerFactory(transformJSX);
 
-export const declarationsTransformRunner: Transformer = async (
-  transformerInput: TransformerInput
-) => {
+export const declarationsTransformRunner: Transformer = async (transformerInput: TransformerInput) => {
   await transformDeclarations(transformerInput);
 };
 
-export const typeAnnotationTransformRunner: Transformer =
-  standardTransformRunnerFactory(transformTypeAnnotations);
+export const typeAnnotationTransformRunner: Transformer = standardTransformRunnerFactory(transformTypeAnnotations);
 
-export const patternTransformRunner: Transformer =
-  standardTransformRunnerFactory(transformPatterns);
+export const patternTransformRunner: Transformer = standardTransformRunnerFactory(transformPatterns);
 
-export const importTransformRunner: Transformer =
-  standardTransformRunnerFactory(addImports);
+export const importTransformRunner: Transformer = standardTransformRunnerFactory(addImports);
 
-export const watermarkTransformRunner: Transformer =
-  standardTransformRunnerFactory(addWatermark);
+export const watermarkTransformRunner: Transformer = standardTransformRunnerFactory(addWatermark);
 
-export const jsxSpreadTransformRunner: Transformer =
-  standardTransformRunnerFactory(transformJsxSpread);
+export const jsxSpreadTransformRunner: Transformer = standardTransformRunnerFactory(transformJsxSpread);
 
-export const removeFlowCommentTransformRunner: Transformer =
-  standardTransformRunnerFactory(removeFlowComments);
+export const removeFlowCommentTransformRunner: Transformer = standardTransformRunnerFactory(removeFlowComments);
 
-export const annotateNoFlowTransformRunner: Transformer =
-  standardTransformRunnerFactory(annotateNoFlow);
+export const annotateNoFlowTransformRunner: Transformer = standardTransformRunnerFactory(annotateNoFlow);

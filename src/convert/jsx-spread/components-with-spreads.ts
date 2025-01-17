@@ -2,11 +2,7 @@ import * as t from "@babel/types";
 import { NodePath } from "@babel/traverse";
 import { getComponentType } from "./get-component-type";
 
-export function componentsWithSpreads(
-  path: NodePath<t.Node>,
-  propArgumentName: string,
-  ignoredNodes: string[] = []
-) {
+export function componentsWithSpreads(path: NodePath<t.Node>, propArgumentName: string, ignoredNodes: string[] = []) {
   const componentsWithSpreads: t.TSType[] = [];
   const restPatterns: Record<string, string> = {};
   const ignoredAttributes: string[] = [];
@@ -38,10 +34,7 @@ export function componentsWithSpreads(
         openingElementPath.traverse(
           {
             JSXSpreadAttribute({ node }) {
-              if (
-                t.isIdentifier(node.argument) &&
-                node.argument.name === this.restName
-              ) {
+              if (t.isIdentifier(node.argument) && node.argument.name === this.restName) {
                 this.isSpread = true;
               }
             },
@@ -62,11 +55,7 @@ export function componentsWithSpreads(
               t.identifier("Omit"),
               t.tsTypeParameterInstantiation([
                 namePropsType,
-                t.tsUnionType(
-                  elementState.omittedAttributes.map((attr) =>
-                    t.tsLiteralType(t.stringLiteral(attr))
-                  )
-                ),
+                t.tsUnionType(elementState.omittedAttributes.map((attr) => t.tsLiteralType(t.stringLiteral(attr)))),
               ])
             );
           } else {
@@ -106,10 +95,7 @@ export function componentsWithSpreads(
           initName = init.name;
         }
 
-        if (
-          initName === this.propArgumentName &&
-          t.isIdentifier(restPattern.argument)
-        ) {
+        if (initName === this.propArgumentName && t.isIdentifier(restPattern.argument)) {
           this.restName = restPattern.argument.name;
         }
       },

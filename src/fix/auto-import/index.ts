@@ -9,10 +9,7 @@ import { FixCommandState, getDiagnostics } from "../state";
  * Use the TypeScript compiler's auto-import feature to try to fix missing imports.
  * Warning: this can be slow in large codebases.
  */
-export async function autoImport(
-  { argv, migrationReporter, project }: FixCommandState,
-  write = true
-) {
+export async function autoImport({ argv, migrationReporter, project }: FixCommandState, write = true) {
   logger.info(`Finding files with potential import errors.`);
   const diagnostics = getDiagnostics(project);
   const sourceFileMap = diagnostics
@@ -26,9 +23,7 @@ export async function autoImport(
       return sourceFileMap.set(sourceFile.getFilePath(), sourceFile);
     }, new Map<string, SourceFile>());
 
-  logger.info(
-    `Attempting to fix import errors with auto-import. This may take a while..`
-  );
+  logger.info(`Attempting to fix import errors with auto-import. This may take a while..`);
   sourceFileMap.forEach((sourceFile) => {
     migrationReporter.autoImport(sourceFile.getFilePath());
     sourceFile.fixMissingImports();
@@ -45,10 +40,6 @@ export async function autoImport(
 
   logger.info(`Done auto-import.`);
 
-  const formatter =
-    argv.format === "json" ? jsonFormatter(argv.output) : stdOutFormatter;
-  await MigrationReporter.logReport(
-    migrationReporter.generateReport(),
-    formatter
-  );
+  const formatter = argv.format === "json" ? jsonFormatter(argv.output) : stdOutFormatter;
+  await MigrationReporter.logReport(migrationReporter.generateReport(), formatter);
 }

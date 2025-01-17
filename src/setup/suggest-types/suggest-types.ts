@@ -3,28 +3,20 @@ import fs from "fs";
 import path from "path";
 import MigrationReporter from "../../runner/migration-reporter";
 
-const normalizeName = (name: string) =>
-  /^@/.test(name) ? name.slice(1).split("/").join("__") : name;
+const normalizeName = (name: string) => (/^@/.test(name) ? name.slice(1).split("/").join("__") : name);
 
 /**
  * Parse package.json and node_modules to find packages missing types
  */
 export function suggestTypes(reporter: MigrationReporter) {
   const nodeModules = path.join(process.cwd(), "node_modules");
-  const rawPackageJson = fs.readFileSync(
-    path.join(process.cwd(), "package.json"),
-    "utf8"
-  );
+  const rawPackageJson = fs.readFileSync(path.join(process.cwd(), "package.json"), "utf8");
   const myPackageJson = JSON.parse(rawPackageJson);
   // Go through each package, and determine if it has a type definitions defined in its package.json
   const maybeNeedTypes = Object.keys(myPackageJson.dependencies)
     .filter((key) => {
       const pathParts = key.split("/");
-      const modulePackageJson = path.join(
-        nodeModules,
-        ...pathParts,
-        "package.json"
-      );
+      const modulePackageJson = path.join(nodeModules, ...pathParts, "package.json");
       const rawData = fs.readFileSync(modulePackageJson, "utf8");
       const parsedJson = JSON.parse(rawData);
       return !parsedJson.typings && !parsedJson.types;

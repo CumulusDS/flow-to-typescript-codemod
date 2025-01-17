@@ -8,11 +8,7 @@ import { jsonFormatter } from "../../runner/migration-reporter/formatters/json-f
 import { logger } from "../../runner/logger";
 import { FixCommandState, getDiagnostics } from "../state";
 
-export async function componentPropChecks({
-  argv,
-  migrationReporter,
-  project,
-}: FixCommandState) {
+export async function componentPropChecks({ argv, migrationReporter, project }: FixCommandState) {
   logger.info("Checking Component Props");
 
   const diagnostics = getDiagnostics(project);
@@ -43,12 +39,7 @@ export async function componentPropChecks({
     const tagName = component.compilerNode.tagName.getFullText();
 
     if (tagName.charAt(0) === tagName.charAt(0).toLowerCase()) {
-      migrationReporter.invalidHTMLProp(
-        sourceFile.getFilePath(),
-        error.getLineNumber() ?? 0,
-        tagName,
-        attributeName
-      );
+      migrationReporter.invalidHTMLProp(sourceFile.getFilePath(), error.getLineNumber() ?? 0, tagName, attributeName);
       return;
     }
 
@@ -84,10 +75,6 @@ export async function componentPropChecks({
     }
   });
 
-  const formatter =
-    argv.format === "json" ? jsonFormatter(argv.output) : stdOutFormatter;
-  await MigrationReporter.logReport(
-    migrationReporter.generateReport(),
-    formatter
-  );
+  const formatter = argv.format === "json" ? jsonFormatter(argv.output) : stdOutFormatter;
+  await MigrationReporter.logReport(migrationReporter.generateReport(), formatter);
 }

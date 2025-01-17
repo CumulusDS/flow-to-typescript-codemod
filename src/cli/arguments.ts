@@ -1,5 +1,5 @@
 export const migrationReportFormats = ["json", "csv", "stdout"] as const;
-export type MigrationReportFormat = typeof migrationReportFormats[number];
+export type MigrationReportFormat = (typeof migrationReportFormats)[number];
 
 export interface SharedCommandCliArgs {
   // The format the migration reporter should use
