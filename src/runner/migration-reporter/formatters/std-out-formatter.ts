@@ -1,16 +1,9 @@
 import path from "path";
 import chalk from "chalk";
 import { logger } from "../../logger";
-import {
-  MigrationReportItem,
-  MigrationReport,
-  MigrationReportItemSeverity,
-} from "../migration-reporter";
+import { MigrationReportItem, MigrationReport, MigrationReportItemSeverity } from "../migration-reporter";
 
-const severityLoggerMap: Record<
-  MigrationReportItemSeverity,
-  (message?: string) => void
-> = {
+const severityLoggerMap: Record<MigrationReportItemSeverity, (message?: string) => void> = {
   [MigrationReportItemSeverity.info]: logger.info,
   [MigrationReportItemSeverity.warn]: logger.warn,
   [MigrationReportItemSeverity.error]: logger.error,
@@ -40,9 +33,9 @@ export async function stdOutFormatter(report: MigrationReport) {
     groupedReport[reportKey].forEach((reportItem) => {
       const log = severityLoggerMap[reportItem.severity];
       const { message } = reportItem;
-      const pathText = `${path.relative(process.cwd(), reportItem.filePath)}:${
-        reportItem.start.line
-      }:${reportItem.start.column}`;
+      const pathText = `${path.relative(process.cwd(), reportItem.filePath)}:${reportItem.start.line}:${
+        reportItem.start.column
+      }`;
       log(`${message} ${chalk.dim(`(${pathText})`)}`);
     });
   });

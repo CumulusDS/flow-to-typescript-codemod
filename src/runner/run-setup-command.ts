@@ -24,8 +24,7 @@ export async function runSetupCommand(argv: SetupCommandCliArgs) {
     logger.await("Searching for type definitions..");
     await suggestTypes(filePathReporter);
     const report = filePathReporter.generateReport();
-    const formatter =
-      argv.format === "json" ? jsonFormatter(argv.output) : stdOutFormatter;
+    const formatter = argv.format === "json" ? jsonFormatter(argv.output) : stdOutFormatter;
     await MigrationReporter.logReport(report, formatter);
   }
 

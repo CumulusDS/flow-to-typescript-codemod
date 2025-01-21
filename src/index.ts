@@ -1,11 +1,7 @@
 import fs from "fs-extra";
 import cluster from "cluster";
 import chalk from "chalk";
-import {
-  FixCommandCliArgs,
-  ConvertCommandCliArgs,
-  SetupCommandCliArgs,
-} from "./cli/arguments";
+import { FixCommandCliArgs, ConvertCommandCliArgs, SetupCommandCliArgs } from "./cli/arguments";
 import { parseCommands } from "./cli/yargs";
 import { logger } from "./runner/logger";
 import { runPrimaryAsync } from "./runner/run-primary-async";

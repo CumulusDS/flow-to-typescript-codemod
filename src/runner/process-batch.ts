@@ -8,10 +8,7 @@ import { runTransforms } from "./run-transforms";
 import MigrationReporter from "./migration-reporter";
 import { ConvertCommandCliArgs } from "../cli/arguments";
 import { defaultTransformerChain } from "../convert/default-transformer-chain";
-import {
-  annotateNoFlowTransformRunner,
-  watermarkTransformRunner,
-} from "../convert/transform-runners";
+import { annotateNoFlowTransformRunner, watermarkTransformRunner } from "../convert/transform-runners";
 import { State } from "./state";
 import { ConfigurableTypeProvider } from "../convert/utils/configurable-type-provider";
 import { hasDeclaration } from "../convert/utils/common";
@@ -39,8 +36,7 @@ export async function processBatchAsync(
       try {
         if (
           (fileType === FlowFileType.NO_FLOW && options.skipNoFlow) ||
-          (fileType === FlowFileType.NO_ANNOTATION &&
-            !options.convertUnannotated)
+          (fileType === FlowFileType.NO_ANNOTATION && !options.convertUnannotated)
         ) {
           return;
         }
@@ -89,10 +85,7 @@ export async function processBatchAsync(
           transforms.push(watermarkTransformRunner);
         }
 
-        if (
-          fileType === FlowFileType.NO_ANNOTATION &&
-          options.convertUnannotated
-        ) {
+        if (fileType === FlowFileType.NO_ANNOTATION && options.convertUnannotated) {
           transforms.push(annotateNoFlowTransformRunner);
         }
 
@@ -105,17 +98,9 @@ export async function processBatchAsync(
         const newFileText = recast.print(file, recastOptions).code;
 
         const targetFilePath =
-          options.target === ""
-            ? filePath
-            : filePath.replace(
-                path.normalize(filePath),
-                path.normalize(options.target)
-              );
+          options.target === "" ? filePath : filePath.replace(path.normalize(filePath), path.normalize(options.target));
 
-        const tsFilePath = targetFilePath.replace(
-          /\.jsx?$/,
-          state.hasJsx || options.forceTSX ? ".tsx" : ".ts"
-        );
+        const tsFilePath = targetFilePath.replace(/\.jsx?$/, state.hasJsx || options.forceTSX ? ".tsx" : ".ts");
 
         if (isTestFile) {
           const fileName = path.basename(filePath);
@@ -123,23 +108,11 @@ export async function processBatchAsync(
           const directoryPath = path.dirname(filePath);
           // since we are in a test file there may be a snapshot we also have to rename.
           const originalSnapPath = `${fileName}.snap`;
-          const snapshotPath = path.join(
-            directoryPath,
-            "__snapshots__",
-            originalSnapPath
-          );
+          const snapshotPath = path.join(directoryPath, "__snapshots__", originalSnapPath);
           if (await fs.pathExists(snapshotPath)) {
-            const newSnapPath = path.join(
-              directoryPath,
-              "__snapshots__",
-              `${tsFileName}.snap`
-            );
+            const newSnapPath = path.join(directoryPath, "__snapshots__", `${tsFileName}.snap`);
             if (snapshotPath !== newSnapPath) {
-              reporter.migrateSnapFile(
-                filePath,
-                originalSnapPath,
-                snapshotPath
-              );
+              reporter.migrateSnapFile(filePath, originalSnapPath, snapshotPath);
               try {
                 await fs.move(snapshotPath, newSnapPath);
               } catch (e) {

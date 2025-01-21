@@ -30,6 +30,14 @@ Every codebase and migration will be slightly different, so we recommend forking
 
 ## 🚀 Quick start
 
+<div style="border: 2px solid red; padding: 10px;">
+
+### ⚠️ **Note!**
+
+### Cumulus version of steps are [here](./StepsToFollow.md)
+
+</div>
+
 To try out this codemod on your codebase, you'll want to clone this repository and build the tool. We used `yarn` for package management but others should work as long as the patch packages are applied.
 
 ```bash

@@ -9,11 +9,7 @@ import { migrateTypeParameterDeclaration } from "./type-parameter";
 export function migrateObjectMember(
   reporter: MigrationReporter,
   state: State,
-  flowMember:
-    | t.ObjectTypeProperty
-    | t.ObjectTypeIndexer
-    | t.ObjectTypeCallProperty
-    | t.ObjectTypeInternalSlot
+  flowMember: t.ObjectTypeProperty | t.ObjectTypeIndexer | t.ObjectTypeCallProperty | t.ObjectTypeInternalSlot
 ): t.TSTypeElement {
   const tsMember = actuallyMigrateObjectMember(reporter, state, flowMember);
   inheritLocAndComments(flowMember, tsMember);
@@ -23,71 +19,43 @@ export function migrateObjectMember(
 function actuallyMigrateObjectMember(
   reporter: MigrationReporter,
   state: State,
-  flowMember:
-    | t.ObjectTypeProperty
-    | t.ObjectTypeIndexer
-    | t.ObjectTypeCallProperty
-    | t.ObjectTypeInternalSlot
+  flowMember: t.ObjectTypeProperty | t.ObjectTypeIndexer | t.ObjectTypeCallProperty | t.ObjectTypeInternalSlot
 ): t.TSTypeElement {
   switch (flowMember.type) {
     case "ObjectTypeProperty": {
       // type Test = { $Key: string };
-      if (
-        flowMember.key.type === "Identifier" &&
-        flowMember.key.name.startsWith("$")
-      ) {
-        reporter.objectPropertyWithInternalName(
-          state.config.filePath,
-          flowMember.loc!
-        );
+      if (flowMember.key.type === "Identifier" && flowMember.key.name.startsWith("$")) {
+        reporter.objectPropertyWithInternalName(state.config.filePath, flowMember.loc!);
       }
 
       // { -test: boolean }
       if (flowMember.variance && flowMember.variance.kind !== "plus") {
-        reporter.objectPropertyWithMinusVariance(
-          state.config.filePath,
-          flowMember.loc!
-        );
+        reporter.objectPropertyWithMinusVariance(state.config.filePath, flowMember.loc!);
       }
 
       if (!(flowMember.kind || flowMember.kind === "init")) {
-        throw new Error(
-          `Unsupported object type property kind: ${JSON.stringify(
-            flowMember.kind
-          )}`
-        );
+        throw new Error(`Unsupported object type property kind: ${JSON.stringify(flowMember.kind)}`);
       }
       if (flowMember.proto) {
-        throw new Error(
-          "Did not expect any Flow properties with `proto` set to true."
-        );
+        throw new Error("Did not expect any Flow properties with `proto` set to true.");
       }
       if (flowMember.static) {
-        throw new Error(
-          "Did not expect any Flow properties with `static` set to true."
-        );
+        throw new Error("Did not expect any Flow properties with `static` set to true.");
       }
 
       const tsValue = migrateType(reporter, state, flowMember.value);
 
       if (!flowMember.method) {
-        const tsPropertySignature = t.tsPropertySignature(
-          flowMember.key,
-          t.tsTypeAnnotation(tsValue)
-        );
+        const tsPropertySignature = t.tsPropertySignature(flowMember.key, t.tsTypeAnnotation(tsValue));
 
         tsPropertySignature.computed = flowMember.key.type !== "Identifier";
         tsPropertySignature.optional = !!flowMember.optional;
-        tsPropertySignature.readonly = flowMember.variance
-          ? flowMember.variance.kind === "plus"
-          : null;
+        tsPropertySignature.readonly = flowMember.variance ? flowMember.variance.kind === "plus" : null;
 
         return tsPropertySignature;
       } else {
         if (tsValue.type !== "TSFunctionType") {
-          throw new Error(
-            `Unexpected AST node: ${JSON.stringify(tsValue.type)}`
-          );
+          throw new Error(`Unexpected AST node: ${JSON.stringify(tsValue.type)}`);
         }
 
         const tsMethodSignature = t.tsMethodSignature(
@@ -106,15 +74,9 @@ function actuallyMigrateObjectMember(
 
     case "ObjectTypeIndexer": {
       if (flowMember.variance && flowMember.variance.kind !== "plus")
-        reporter.objectPropertyWithMinusVariance(
-          state.config.filePath,
-          flowMember.loc!
-        );
+        reporter.objectPropertyWithMinusVariance(state.config.filePath, flowMember.loc!);
 
-      if (flowMember.static)
-        throw new Error(
-          "Did not expect any Flow properties with `static` set to true."
-        );
+      if (flowMember.static) throw new Error("Did not expect any Flow properties with `static` set to true.");
 
       const tsIndexSignature = t.tsIndexSignature(
         [
@@ -126,9 +88,7 @@ function actuallyMigrateObjectMember(
         ],
         t.tsTypeAnnotation(migrateType(reporter, state, flowMember.value))
       );
-      tsIndexSignature.readonly = flowMember.variance
-        ? flowMember.variance.kind === "plus"
-        : null;
+      tsIndexSignature.readonly = flowMember.variance ? flowMember.variance.kind === "plus" : null;
       return tsIndexSignature;
     }
 
@@ -155,17 +115,9 @@ function actuallyMigrateObjectMember(
         return callSignature;
       }
       const typeParams = flowType.typeParameters
-        ? migrateTypeParameterDeclaration(
-            reporter,
-            state,
-            flowType.typeParameters
-          )
+        ? migrateTypeParameterDeclaration(reporter, state, flowType.typeParameters)
         : null;
-      const functionParams = migrateFunctionParameters(
-        reporter,
-        state,
-        flowType
-      );
+      const functionParams = migrateFunctionParameters(reporter, state, flowType);
 
       return t.tsCallSignatureDeclaration(
         typeParams,
@@ -178,9 +130,7 @@ function actuallyMigrateObjectMember(
       );
 
     case "ObjectTypeInternalSlot":
-      throw new Error(
-        `Unsupported AST node: ${JSON.stringify(flowMember.type)}`
-      );
+      throw new Error(`Unsupported AST node: ${JSON.stringify(flowMember.type)}`);
 
     default: {
       const never: { type: string } = flowMember;

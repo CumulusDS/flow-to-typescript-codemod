@@ -9,21 +9,14 @@ import { MetaData } from "./migrate/metadata";
 /**
  * Convert type annotations for variables and parameters
  */
-export function transformTypeAnnotations({
-  reporter,
-  state,
-  file,
-}: TransformerInput) {
+export function transformTypeAnnotations({ reporter, state, file }: TransformerInput) {
   traverse(file, {
     TypeAnnotation(path) {
       const metaData: MetaData = { path };
       // Flow automatically makes function parameters that accept `void` not required.
       // However, TypeScript requires a parameter even if it is marked as void. So make all
       // parameters that accept `void` optional.
-      if (
-        path.parent.type === "Identifier" &&
-        path.parentPath.parent.type !== "VariableDeclarator"
-      ) {
+      if (path.parent.type === "Identifier" && path.parentPath.parent.type !== "VariableDeclarator") {
         // `function f(x: ?T)` → `function f(x?: T | null)`
         if (path.node.typeAnnotation.type === "NullableTypeAnnotation") {
           path.parent.optional = true;
@@ -39,15 +32,12 @@ export function transformTypeAnnotations({
         // `function f(x: T | void)` → `function f(x?: T)`
         if (
           path.node.typeAnnotation.type === "UnionTypeAnnotation" &&
-          path.node.typeAnnotation.types.some(
-            (unionType) => unionType.type === "VoidTypeAnnotation"
-          )
+          path.node.typeAnnotation.types.some((unionType) => unionType.type === "VoidTypeAnnotation")
         ) {
           path.parent.optional = true;
-          path.node.typeAnnotation.types =
-            path.node.typeAnnotation.types.filter(
-              (unionType) => unionType.type !== "VoidTypeAnnotation"
-            );
+          path.node.typeAnnotation.types = path.node.typeAnnotation.types.filter(
+            (unionType) => unionType.type !== "VoidTypeAnnotation"
+          );
         }
       }
 
@@ -62,21 +52,14 @@ export function transformTypeAnnotations({
 
       replaceWith(
         path,
-        t.tsTypeAnnotation(
-          migrateType(reporter, state, path.node.typeAnnotation, metaData)
-        ),
+        t.tsTypeAnnotation(migrateType(reporter, state, path.node.typeAnnotation, metaData)),
         state.config.filePath,
         reporter
       );
     },
 
     TypeParameterDeclaration(path) {
-      replaceWith(
-        path,
-        migrateTypeParameterDeclaration(reporter, state, path.node),
-        state.config.filePath,
-        reporter
-      );
+      replaceWith(path, migrateTypeParameterDeclaration(reporter, state, path.node), state.config.filePath, reporter);
     },
   });
 }

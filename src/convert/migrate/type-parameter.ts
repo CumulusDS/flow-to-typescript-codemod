@@ -14,15 +14,10 @@ export function migrateTypeParameterDeclaration(
     // ReadOnlyMap<K, +V>
     // https://flow.org/en/docs/lang/variance/
     if (flowTypeParameter.variance !== null) {
-      reporter.typeParameterWithVariance(
-        state.config.filePath,
-        flowTypeParameter.loc!
-      );
+      reporter.typeParameterWithVariance(state.config.filePath, flowTypeParameter.loc!);
     }
     const tsTypeParameter = t.tsTypeParameter(
-      flowTypeParameter.bound
-        ? migrateType(reporter, state, flowTypeParameter.bound.typeAnnotation)
-        : null,
+      flowTypeParameter.bound ? migrateType(reporter, state, flowTypeParameter.bound.typeAnnotation) : null,
       flowTypeParameter.default
         ? migrateType(reporter, state, flowTypeParameter.default, {
             isTypeParameter: true,

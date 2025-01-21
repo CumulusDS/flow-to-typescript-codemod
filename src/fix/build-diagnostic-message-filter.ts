@@ -7,9 +7,7 @@ function isDiagnosticMessageChain(
 }
 
 export const buildDiagnosticFilter = (targetedErrorMessage: string) =>
-  function diagnosticFilter(
-    diagnostic: Diagnostic | DiagnosticMessageChain
-  ): boolean {
+  function diagnosticFilter(diagnostic: Diagnostic | DiagnosticMessageChain): boolean {
     const messageText = diagnostic.getMessageText();
 
     if (typeof messageText !== "string") {

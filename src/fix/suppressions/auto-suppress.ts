@@ -45,9 +45,7 @@ function addSuppressionsInFile(
   { jiraSlug, useIgnore }: FixCommandCliArgs
 ) {
   let addedLength = 0;
-  for (const { position, commentType, diagnostics } of Object.values(
-    positions
-  )) {
+  for (const { position, commentType, diagnostics } of Object.values(positions)) {
     const isInsuppressible = diagnostics.find((error) => {
       const isInsuppressible = !isDiagnosticSuppressible(error);
       if (isInsuppressible) {
@@ -76,14 +74,8 @@ function addSuppressionsInFile(
 type FileWriter = (file: SourceFile) => void;
 const defaultWriter = (file: SourceFile) => file.saveSync();
 
-export async function autoSuppressErrors(
-  { argv, project }: FixCommandState,
-  writeFile: FileWriter = defaultWriter
-) {
-  const diagnosticsByFile: Map<
-    SourceFile,
-    Record<number, CommentToMake>
-  > = new Map();
+export async function autoSuppressErrors({ argv, project }: FixCommandState, writeFile: FileWriter = defaultWriter) {
+  const diagnosticsByFile: Map<SourceFile, Record<number, CommentToMake>> = new Map();
   logger.info("Suppressing errors..");
   const diagnostics = getDiagnostics(project);
 
@@ -142,7 +134,5 @@ export async function autoSuppressErrors(
     }
   }
 
-  logger.complete(
-    `Suppressed ${metrics.suppressed} errors across ${diagnosticsByFile.size} files.`
-  );
+  logger.complete(`Suppressed ${metrics.suppressed} errors across ${diagnosticsByFile.size} files.`);
 }

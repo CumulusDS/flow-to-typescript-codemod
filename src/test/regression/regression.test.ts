@@ -4,34 +4,22 @@ import * as ts from "typescript";
 import dedent from "dedent";
 import { flowTypeAtPos } from "../../convert/flow/type-at-pos";
 import { transform } from "../../convert/utils/testing";
+import "../typings/index.d.ts";
 
 jest.mock("../../convert/flow/type-at-pos");
 
-const mockedFlowTypeAtPos = <jest.MockedFunction<typeof flowTypeAtPos>>(
-  flowTypeAtPos
-);
+const mockedFlowTypeAtPos = <jest.MockedFunction<typeof flowTypeAtPos>>flowTypeAtPos;
 mockedFlowTypeAtPos.mockResolvedValue(anyTypeAnnotation());
 
 function generateTypeScriptErrorMessages(received: ts.Diagnostic[]) {
   const errorMessages = received.map((diagnostic) => {
-    const { line, character } = ts.getLineAndCharacterOfPosition(
-      diagnostic.file!,
-      diagnostic.start!
-    );
-    const errorMessage = ts.flattenDiagnosticMessageText(
-      diagnostic.messageText,
-      "\n"
-    );
-    return `${diagnostic.file!.fileName} (${line + 1},${
-      character + 1
-    }): ${errorMessage}`;
+    const { line, character } = ts.getLineAndCharacterOfPosition(diagnostic.file!, diagnostic.start!);
+    const errorMessage = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
+    return `${diagnostic.file!.fileName} (${line + 1},${character + 1}): ${errorMessage}`;
   });
   return dedent`Received TypeScript errors:
    ${dedent(
-     [...new Set(errorMessages)].reduce(
-       (returnMessage, error, n) => `${returnMessage + (n + 1)}. ${error}\n\n`,
-       ""
-     )
+     [...new Set(errorMessages)].reduce((returnMessage, error, n) => `${returnMessage + (n + 1)}. ${error}\n\n`, "")
    )}`;
 }
 
@@ -54,17 +42,14 @@ expect.extend({
 
 describe("Regression tests", () => {
   test("flow_typescript_differences", async () => {
-    const transformedData = await getData(
-      `${__dirname}/../test-files/flow_typescript_differences.js`
-    );
+    const transformedData = await getData(`${__dirname}/../test-files/flow_typescript_differences.js`);
 
     expect(transformedData).toMatchSnapshot();
 
-    const transformationResult = compileTypeScriptCode(
-      "flow_typescript_differences",
-      replaceImports(transformedData),
-      ["es2015", "dom"]
-    );
+    const transformationResult = compileTypeScriptCode("flow_typescript_differences", replaceImports(transformedData), [
+      "es2015",
+      "dom",
+    ]);
 
     expect(transformationResult.diagnostics).toHaveNoTypeScriptErrors();
     expect(transformationResult.success).toBeTruthy();
@@ -88,16 +73,8 @@ async function getData(filename: string) {
 // Don't apply this before the snapshot, or your snapshot will have absoulte paths
 function replaceImports(data: string) {
   return data
-    .replace(
-      /flow-to-typescript-codemod/,
-      require.resolve("../../../flow.d").replace(/.d.ts/, "")
-    )
-    .replace(
-      /'react'/gi,
-      `'${require.resolve(
-        "../../../node_modules/@types/react/index.d"
-      )}'`.replace(/.d.ts/, "")
-    );
+    .replace(/flow-to-typescript-codemod/, require.resolve("../../../flow.d").replace(/.d.ts/, ""))
+    .replace(/'react'/gi, `'${require.resolve("../../../node_modules/@types/react/index.d")}'`.replace(/.d.ts/, ""));
 }
 
 function compileTypeScriptCode(
@@ -125,37 +102,18 @@ function compileTypeScriptCode(
   const fileSystemHost = ts.createCompilerHost(options, true);
 
   // Create a dummy TS source file based on the input code
-  const dummySourceFile = ts.createSourceFile(
-    sourceFileNameWithExtension,
-    code,
-    ts.ScriptTarget.Latest
-  );
+  const dummySourceFile = ts.createSourceFile(sourceFileNameWithExtension, code, ts.ScriptTarget.Latest);
 
   // Proxy the functions we care about to allow reading files from memory
   const proxiedMemoryHost: ts.CompilerHost = {
     ...fileSystemHost,
     ...{
-      fileExists: (filePath) =>
-        filePath === sourceFileNameWithExtension ||
-        fileSystemHost.fileExists(filePath),
-      getSourceFile: (
-        fileName,
-        languageVersion,
-        onError,
-        shouldCreateNewSourceFile
-      ) =>
+      fileExists: (filePath) => filePath === sourceFileNameWithExtension || fileSystemHost.fileExists(filePath),
+      getSourceFile: (fileName, languageVersion, onError, shouldCreateNewSourceFile) =>
         fileName === sourceFileNameWithExtension
           ? dummySourceFile
-          : fileSystemHost.getSourceFile(
-              fileName,
-              languageVersion,
-              onError,
-              shouldCreateNewSourceFile
-            ),
-      readFile: (filePath) =>
-        filePath === sourceFileNameWithExtension
-          ? code
-          : fileSystemHost.readFile(filePath),
+          : fileSystemHost.getSourceFile(fileName, languageVersion, onError, shouldCreateNewSourceFile),
+      readFile: (filePath) => (filePath === sourceFileNameWithExtension ? code : fileSystemHost.readFile(filePath)),
       writeFile: () => {
         // Do nothing
       },
@@ -163,14 +121,8 @@ function compileTypeScriptCode(
   };
 
   // Load TypeScript Libs
-  const rootNames = libs.map((lib) =>
-    require.resolve(`typescript/lib/lib.${lib}.d.ts`)
-  );
-  const program = ts.createProgram(
-    rootNames.concat([sourceFileNameWithExtension]),
-    options,
-    proxiedMemoryHost
-  );
+  const rootNames = libs.map((lib) => require.resolve(`typescript/lib/lib.${lib}.d.ts`));
+  const program = ts.createProgram(rootNames.concat([sourceFileNameWithExtension]), options, proxiedMemoryHost);
   const emitResult = program.emit();
   const diagnostics = ts.getPreEmitDiagnostics(program);
   return {

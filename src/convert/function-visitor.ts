@@ -1,11 +1,6 @@
 import * as t from "@babel/types";
 import { NodePath } from "@babel/traverse";
-import {
-  FunctionDeclaration,
-  FunctionExpression,
-  ArrowFunctionExpression,
-  ClassMethod,
-} from "@babel/types";
+import { FunctionDeclaration, FunctionExpression, ArrowFunctionExpression, ClassMethod } from "@babel/types";
 import MigrationReporter from "../runner/migration-reporter";
 import { State } from "../runner/state";
 import { annotateParamsWithFlowTypeAtPos } from "./flow/annotate-params";
@@ -19,11 +14,7 @@ type FunctionVisitorProps = {
 };
 
 export const functionVisitor = <
-  TNodeType extends
-    | FunctionExpression
-    | FunctionDeclaration
-    | ArrowFunctionExpression
-    | ClassMethod
+  TNodeType extends FunctionExpression | FunctionDeclaration | ArrowFunctionExpression | ClassMethod
 >({
   awaitPromises,
   reporter,
@@ -39,9 +30,7 @@ export const functionVisitor = <
     if (state.config.isTestFile) {
       for (const param of path.node.params) {
         if (!(param as t.Identifier).typeAnnotation) {
-          (param as t.Identifier).typeAnnotation = t.tsTypeAnnotation(
-            t.tsAnyKeyword()
-          );
+          (param as t.Identifier).typeAnnotation = t.tsTypeAnnotation(t.tsAnyKeyword());
         }
       }
       return;
@@ -49,11 +38,7 @@ export const functionVisitor = <
 
     // In Flow, class constructors can have a return type (usually void).
     // This is an error in TS.
-    if (
-      path.node.type === "ClassMethod" &&
-      t.isIdentifier(path.node.key) &&
-      path.node.key.name === "constructor"
-    ) {
+    if (path.node.type === "ClassMethod" && t.isIdentifier(path.node.key) && path.node.key.name === "constructor") {
       delete path.node.returnType;
     }
 
@@ -67,8 +52,7 @@ export const functionVisitor = <
         if (classDeclaration && classDeclaration.type === "ClassDeclaration") {
           if (
             classDeclaration.typeParameters &&
-            classDeclaration.typeParameters.type ===
-              "TypeParameterDeclaration" &&
+            classDeclaration.typeParameters.type === "TypeParameterDeclaration" &&
             classDeclaration.typeParameters.params.length > 0
           ) {
             // The class has type parameters, if the static function doesn't declare them we need to declare them
@@ -84,18 +68,11 @@ export const functionVisitor = <
     // can infer accurate arguments that will cause fewer issues than types inferred by Flow,
     // as well as maintain the original intention of the author
     if (path.parentPath.node.type !== "CallExpression") {
-      awaitPromises.push(
-        annotateParamsWithFlowTypeAtPos(reporter, state, path.node.params, path)
-      );
+      awaitPromises.push(annotateParamsWithFlowTypeAtPos(reporter, state, path.node.params, path));
     }
 
     if (path.node.async) {
-      handleAsyncReturnType(
-        path.node,
-        reporter,
-        state.config.filePath,
-        getLoc(path.node)
-      );
+      handleAsyncReturnType(path.node, reporter, state.config.filePath, getLoc(path.node));
     }
   },
   exit(path: NodePath<TNodeType>) {
@@ -108,10 +85,7 @@ export const functionVisitor = <
         paramIsOptional = true;
         if (param.left.type === "Identifier" && param.left.optional) {
           param.left.optional = false;
-        } else if (
-          t.isObjectExpression(param.right) &&
-          t.isObjectPattern(param.left)
-        ) {
+        } else if (t.isObjectExpression(param.right) && t.isObjectPattern(param.left)) {
           if (param.right.properties.length === 0) {
             // If we are assigning a param to an empty object: function f({stuff}: {stuff: Type} = {})
             // check if the type annotation assigned to the left is an object type annotation
@@ -120,14 +94,10 @@ export const functionVisitor = <
               t.isObjectTypeAnnotation(param.left.typeAnnotation.typeAnnotation)
             ) {
               // if it is go through each property and check if any aren't optional
-              for (const prop of param.left.typeAnnotation.typeAnnotation
-                .properties) {
+              for (const prop of param.left.typeAnnotation.typeAnnotation.properties) {
                 // for each required property report a warning
                 if (t.isObjectTypeProperty(prop) && !prop.optional) {
-                  reporter.requiredPropInOptionalAssignment(
-                    state.config.filePath,
-                    param.loc!
-                  );
+                  reporter.requiredPropInOptionalAssignment(state.config.filePath, param.loc!);
                 }
               }
             }
@@ -145,9 +115,7 @@ export const functionVisitor = <
         const hasVoid =
           param.typeAnnotation.type === "TypeAnnotation" &&
           param.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation" &&
-          param.typeAnnotation.typeAnnotation.types.some(
-            (unionType) => unionType.type === "VoidTypeAnnotation"
-          );
+          param.typeAnnotation.typeAnnotation.types.some((unionType) => unionType.type === "VoidTypeAnnotation");
         paramIsOptional = param.optional || isNullable || hasVoid;
       }
 
@@ -159,41 +127,26 @@ export const functionVisitor = <
         ) as t.Identifier;
         delete identifier.optional;
 
-        if (
-          identifier.typeAnnotation &&
-          identifier.typeAnnotation.type === "TSTypeAnnotation"
-        ) {
+        if (identifier.typeAnnotation && identifier.typeAnnotation.type === "TSTypeAnnotation") {
           if (identifier.typeAnnotation.typeAnnotation.type === "TSUnionType") {
-            identifier.typeAnnotation.typeAnnotation.types.push(
-              t.tsUndefinedKeyword()
-            );
+            identifier.typeAnnotation.typeAnnotation.types.push(t.tsUndefinedKeyword());
           } else {
             identifier.typeAnnotation.typeAnnotation = t.tsUnionType([
               identifier.typeAnnotation.typeAnnotation,
               t.tsUndefinedKeyword(),
             ]);
           }
-        } else if (
-          identifier.typeAnnotation &&
-          identifier.typeAnnotation.type === "TypeAnnotation"
-        ) {
-          if (
-            identifier.typeAnnotation.typeAnnotation.type ===
-            "NullableTypeAnnotation"
-          ) {
+        } else if (identifier.typeAnnotation && identifier.typeAnnotation.type === "TypeAnnotation") {
+          if (identifier.typeAnnotation.typeAnnotation.type === "NullableTypeAnnotation") {
             identifier.typeAnnotation.typeAnnotation = t.unionTypeAnnotation([
               identifier.typeAnnotation.typeAnnotation.typeAnnotation,
               t.nullLiteralTypeAnnotation(),
               t.genericTypeAnnotation(t.identifier("undefined")),
             ]);
-          } else if (
-            identifier.typeAnnotation.typeAnnotation.type ===
-            "UnionTypeAnnotation"
-          ) {
-            identifier.typeAnnotation.typeAnnotation.types =
-              identifier.typeAnnotation.typeAnnotation.types.filter(
-                (unionType) => unionType.type !== "VoidTypeAnnotation"
-              );
+          } else if (identifier.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation") {
+            identifier.typeAnnotation.typeAnnotation.types = identifier.typeAnnotation.typeAnnotation.types.filter(
+              (unionType) => unionType.type !== "VoidTypeAnnotation"
+            );
             identifier.typeAnnotation.typeAnnotation = t.unionTypeAnnotation([
               identifier.typeAnnotation.typeAnnotation,
               t.genericTypeAnnotation(t.identifier("undefined")),
@@ -211,8 +164,7 @@ export const functionVisitor = <
 
     // let us fix return types for functions that return objects
     if (
-      (t.isObjectExpression(path.node.body) &&
-        (path.node.returnType || path.node.typeParameters)) ||
+      (t.isObjectExpression(path.node.body) && (path.node.returnType || path.node.typeParameters)) ||
       (path.node.extra?.parenthesized && t.isExpression(path.node.body))
     ) {
       path.node.extra = { ...path.node.extra, parenthesized: false };

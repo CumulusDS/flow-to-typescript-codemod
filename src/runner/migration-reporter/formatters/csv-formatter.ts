@@ -26,15 +26,10 @@ export function csvFormatter(filePath: string) {
     const items = report.migrationReportItems.sort(compare);
 
     for (const item of items) {
-      const pathText = `${relative(process.cwd(), item.filePath)}:${
-        item.start.line
-      }:${item.start.column}`;
+      const pathText = `${relative(process.cwd(), item.filePath)}:${item.start.line}:${item.start.column}`;
       table.push([item.type, item.severity, item.message, pathText]);
     }
 
-    return fs.promises.writeFile(
-      relative(process.cwd(), filePath),
-      stringify(table)
-    );
+    return fs.promises.writeFile(relative(process.cwd(), filePath), stringify(table));
   };
 }

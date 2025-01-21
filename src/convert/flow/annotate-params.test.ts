@@ -3,9 +3,7 @@ import { stateBuilder, transform } from "../utils/testing";
 import { executeFlowTypeAtPos } from "./execute-type-at-pos";
 
 jest.mock("./execute-type-at-pos.ts");
-const mockedExecuteFlowTypeAtPos = <
-  jest.MockedFunction<typeof executeFlowTypeAtPos>
->executeFlowTypeAtPos;
+const mockedExecuteFlowTypeAtPos = <jest.MockedFunction<typeof executeFlowTypeAtPos>>executeFlowTypeAtPos;
 
 describe("implied params", () => {
   afterEach(mockedExecuteFlowTypeAtPos.mockReset);
@@ -245,8 +243,6 @@ describe("implied params", () => {
     }
     `;
 
-    expect(
-      await transform(src, stateBuilder({ config: { disableFlow: true } }))
-    ).toBe(expected);
+    expect(await transform(src, stateBuilder({ config: { disableFlow: true } }))).toBe(expected);
   });
 });

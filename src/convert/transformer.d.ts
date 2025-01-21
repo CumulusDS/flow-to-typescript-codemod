@@ -8,6 +8,4 @@ export type TransformerInput = {
   file: t.File;
 };
 
-export type Transformer<T = unknown> = (
-  transformerInput: TransformerInput
-) => Promise<T> | T;
+export type Transformer<T = unknown> = (transformerInput: TransformerInput) => Promise<T> | T;

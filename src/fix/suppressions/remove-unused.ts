@@ -13,16 +13,10 @@ const TYPESCRIPT_UNUSED_EXPECT_ERROR_CODE = 2578;
 /**
  * Remove suppression comments for unused expect errors in the file
  */
-function removeUnusedInFile(
-  metrics: Metrics,
-  positions: Record<number, CommentToMake>,
-  sourceFile: SourceFile
-) {
+function removeUnusedInFile(metrics: Metrics, positions: Record<number, CommentToMake>, sourceFile: SourceFile) {
   let addedLength = 0;
   for (const { commentType, diagnostics } of Object.values(positions)) {
-    const unusedExpectError = diagnostics.find(
-      (error) => error.getCode() === TYPESCRIPT_UNUSED_EXPECT_ERROR_CODE
-    );
+    const unusedExpectError = diagnostics.find((error) => error.getCode() === TYPESCRIPT_UNUSED_EXPECT_ERROR_CODE);
     if (unusedExpectError !== undefined) {
       const start = unusedExpectError.getStart();
       const length = unusedExpectError.getLength();
@@ -55,14 +49,8 @@ function removeUnusedInFile(
 type FileWriter = (file: SourceFile) => void;
 const defaultWriter = (file: SourceFile) => file.saveSync();
 
-export async function removeUnusedErrors(
-  { project }: FixCommandState,
-  writeFile: FileWriter = defaultWriter
-) {
-  const diagnosticsByFile: Map<
-    SourceFile,
-    Record<number, CommentToMake>
-  > = new Map();
+export async function removeUnusedErrors({ project }: FixCommandState, writeFile: FileWriter = defaultWriter) {
+  const diagnosticsByFile: Map<SourceFile, Record<number, CommentToMake>> = new Map();
   logger.info("Removing unused suppressions..");
 
   const diagnostics = getDiagnostics(project);
@@ -121,7 +109,5 @@ export async function removeUnusedErrors(
     }
   }
 
-  logger.complete(
-    `Removed ${metrics.removed} errors across ${diagnosticsByFile.size} files.`
-  );
+  logger.complete(`Removed ${metrics.removed} errors across ${diagnosticsByFile.size} files.`);
 }

@@ -9,11 +9,7 @@ import { FixCommandState, getDiagnostics } from "../state";
 
 const REEXPORTED_TYPE_ERROR = 1205; // See: https://www.typescriptlang.org/tsconfig#isolatedModules
 
-function extractTypeOnlyExports(
-  sourceFile: SourceFile,
-  exportNode: ExportDeclaration,
-  typeOnlyIdentifiers: string[]
-) {
+function extractTypeOnlyExports(sourceFile: SourceFile, exportNode: ExportDeclaration, typeOnlyIdentifiers: string[]) {
   const structure = exportNode.getStructure();
 
   const extractedTypeOnlyExports = [];
@@ -43,10 +39,7 @@ function extractTypeOnlyExports(
 
 function fixTypeOnlyExports(sourceFile: SourceFile, identifiers: Node[]) {
   const identifiersByExport = identifiers.reduce((exportMap, node: Node) => {
-    const exportNode = getParentUntil(
-      node,
-      ts.isExportDeclaration
-    ) as ExportDeclaration;
+    const exportNode = getParentUntil(node, ts.isExportDeclaration) as ExportDeclaration;
     if (exportNode) {
       const identifiers = exportMap.get(exportNode) || [];
       exportMap.set(exportNode, [...identifiers, node]);
@@ -81,39 +74,31 @@ export async function fixTypeExports(
 
   const initialDiagnostics = getDiagnostics(project);
 
-  const diagnostics = initialDiagnostics.filter(
-    (diagnostic) => diagnostic.getCode() === REEXPORTED_TYPE_ERROR
-  );
+  const diagnostics = initialDiagnostics.filter((diagnostic) => diagnostic.getCode() === REEXPORTED_TYPE_ERROR);
 
   logger.info(`${diagnostics.length} type-export diagnostics received.`);
 
-  const invalidTypeExportIdentifiersByFile = diagnostics.reduce(
-    (sourceFileMap, error) => {
-      const sourceFile = error.getSourceFile();
-      const location = error.getStart();
-      if (!sourceFile || !location) {
-        return sourceFileMap;
-      }
-
-      const node = sourceFile.getDescendantAtPos(location);
-      if (node) {
-        const nodes = sourceFileMap.get(sourceFile) || [];
-        sourceFileMap.set(sourceFile, [...nodes, node]);
-      }
-
+  const invalidTypeExportIdentifiersByFile = diagnostics.reduce((sourceFileMap, error) => {
+    const sourceFile = error.getSourceFile();
+    const location = error.getStart();
+    if (!sourceFile || !location) {
       return sourceFileMap;
-    },
-    new Map<SourceFile, Node[]>()
-  );
+    }
+
+    const node = sourceFile.getDescendantAtPos(location);
+    if (node) {
+      const nodes = sourceFileMap.get(sourceFile) || [];
+      sourceFileMap.set(sourceFile, [...nodes, node]);
+    }
+
+    return sourceFileMap;
+  }, new Map<SourceFile, Node[]>());
 
   logger.info(`Fixing mismatched type exports.`);
 
   invalidTypeExportIdentifiersByFile.forEach((nodes, sourceFile) => {
     for (const node of nodes) {
-      migrationReporter.typeExports(
-        sourceFile.getFilePath(),
-        node.getStartLineNumber()
-      );
+      migrationReporter.typeExports(sourceFile.getFilePath(), node.getStartLineNumber());
     }
 
     fixTypeOnlyExports(sourceFile, nodes);

@@ -7,10 +7,7 @@ export function migrateQualifiedIdentifier(
   if (identifier.type === "Identifier") {
     return identifier;
   } else {
-    const tsQualifiedName = t.tsQualifiedName(
-      migrateQualifiedIdentifier(identifier.qualification),
-      identifier.id
-    );
+    const tsQualifiedName = t.tsQualifiedName(migrateQualifiedIdentifier(identifier.qualification), identifier.id);
     inheritLocAndComments(identifier.qualification, tsQualifiedName);
     return tsQualifiedName;
   }

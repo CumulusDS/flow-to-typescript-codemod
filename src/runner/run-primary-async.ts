@@ -4,11 +4,7 @@ import os from "os";
 import cluster from "cluster";
 import { ConvertCommandCliArgs } from "../cli/arguments";
 import { logger, interactiveLogger } from "./logger";
-import {
-  findFlowFilesAsync,
-  FlowFileList,
-  FlowFileType,
-} from "./find-flow-files";
+import { findFlowFilesAsync, FlowFileList, FlowFileType } from "./find-flow-files";
 import MigrationReporter, { MigrationReport } from "./migration-reporter";
 import { stdOutFormatter } from "./migration-reporter/formatters/std-out-formatter";
 import { jsonFormatter } from "./migration-reporter/formatters/json-formatter";
@@ -40,19 +36,10 @@ export async function runPrimaryAsync(options: ConvertCommandCliArgs) {
   for (const p of options.path) {
     const isDirectory = fs.lstatSync(p).isDirectory();
     if (isDirectory) {
-      filePromises.push(
-        findFlowFilesAsync(
-          p,
-          options.ignore,
-          filePathReporter,
-          options.stripPathsForIgnore
-        )
-      );
+      filePromises.push(findFlowFilesAsync(p, options.ignore, filePathReporter, options.stripPathsForIgnore));
     } else {
       logger.info("Path to convert is a file, only converting single file.");
-      const filePromise: Promise<FlowFileList> = Promise.resolve([
-        { filePath: p, fileType: FlowFileType.FLOW },
-      ]);
+      const filePromise: Promise<FlowFileList> = Promise.resolve([{ filePath: p, fileType: FlowFileType.FLOW }]);
       filePromises.push(filePromise);
     }
   }
@@ -69,10 +56,7 @@ export async function runPrimaryAsync(options: ConvertCommandCliArgs) {
   shuffle(flowFilePaths);
   const cpus = os.cpus().length;
   /** The size of a file batch that we send to a worker. */
-  const BATCH = Math.min(
-    Math.max(Math.trunc(flowFilePaths.length / cpus), 1),
-    50
-  );
+  const BATCH = Math.min(Math.max(Math.trunc(flowFilePaths.length / cpus), 1), 50);
   logger.note(`Selecting a batch size of ${BATCH}.`);
 
   // Generate our batches of files
@@ -83,14 +67,10 @@ export async function runPrimaryAsync(options: ConvertCommandCliArgs) {
   const totalBatches = batches.length;
 
   const workerCount = Math.min(cpus, batches.length);
-  logger.note(
-    `Spawning ${workerCount} workers to process ${flowFilePaths.length} files.`
-  );
+  logger.note(`Spawning ${workerCount} workers to process ${flowFilePaths.length} files.`);
 
   if (!options.write) {
-    logger.info(
-      "Running in dry-mode! No TypeScript will be written to disk unless specified with --write."
-    );
+    logger.info("Running in dry-mode! No TypeScript will be written to disk unless specified with --write.");
   }
 
   const reports: Array<MigrationReport> = [filePathReporter.generateReport()];
@@ -112,14 +92,10 @@ export async function runPrimaryAsync(options: ConvertCommandCliArgs) {
   // Setup logging progress
   const updateProgress = () => {
     if (areWorkersCompleted()) {
-      interactiveLogger.complete(
-        `Finished processing batches - [${totalBatches}/${totalBatches}]`
-      );
+      interactiveLogger.complete(`Finished processing batches - [${totalBatches}/${totalBatches}]`);
       return;
     }
-    interactiveLogger.pending(
-      `Processing batches - [${totalBatches - batches.length}/${totalBatches}]`
-    );
+    interactiveLogger.pending(`Processing batches - [${totalBatches - batches.length}/${totalBatches}]`);
   };
 
   for (let i = 0; i < cpus; i++) {
@@ -178,11 +154,7 @@ export async function runPrimaryAsync(options: ConvertCommandCliArgs) {
       }
 
       timeoutId = setTimeout(() => {
-        logger.warn(
-          `Worker #${
-            i + 1
-          } hasn’t responded in 2 minutes after sending the batch:`
-        );
+        logger.warn(`Worker #${i + 1} hasn’t responded in 2 minutes after sending the batch:`);
         for (const file of batch) {
           logger.warn(`• ${path.relative(process.cwd(), file.filePath)}`);
         }
@@ -198,10 +170,8 @@ export async function runPrimaryAsync(options: ConvertCommandCliArgs) {
       const toRemoveCalls = [];
       for (const flowFilePath of flowFilePaths) {
         const wasSkipped =
-          (flowFilePath.fileType === FlowFileType.NO_FLOW &&
-            options.skipNoFlow) ||
-          (flowFilePath.fileType === FlowFileType.NO_ANNOTATION &&
-            !options.convertUnannotated);
+          (flowFilePath.fileType === FlowFileType.NO_FLOW && options.skipNoFlow) ||
+          (flowFilePath.fileType === FlowFileType.NO_ANNOTATION && !options.convertUnannotated);
 
         if (!wasSkipped) {
           toRemoveCalls.push(fs.remove(flowFilePath.filePath));
@@ -209,9 +179,7 @@ export async function runPrimaryAsync(options: ConvertCommandCliArgs) {
       }
       await Promise.all(toRemoveCalls);
     } else {
-      logger.info(
-        "Not modifying original source files. Run with -d to delete after conversion."
-      );
+      logger.info("Not modifying original source files. Run with -d to delete after conversion.");
     }
     if (options.silent && options.format === "stdout") {
       return;
@@ -235,13 +203,9 @@ export async function runPrimaryAsync(options: ConvertCommandCliArgs) {
     }
 
     if (options.write) {
-      logger.success(
-        `Converted ${mergedReport.lineCount} lines in ${flowFilePaths.length} files.`
-      );
+      logger.success(`Converted ${mergedReport.lineCount} lines in ${flowFilePaths.length} files.`);
     } else {
-      logger.success(
-        `Processed ${mergedReport.lineCount} lines in ${flowFilePaths.length} files.`
-      );
+      logger.success(`Processed ${mergedReport.lineCount} lines in ${flowFilePaths.length} files.`);
     }
   }
 }

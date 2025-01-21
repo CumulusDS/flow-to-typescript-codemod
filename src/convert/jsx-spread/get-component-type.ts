@@ -31,29 +31,15 @@ function translateHTMLComponent(tag: string) {
 
 export function getComponentType(targetTag: string) {
   if (targetTag.charAt(0) === targetTag.charAt(0).toLowerCase()) {
-    const qualifiedTypeAnnotation = t.tsQualifiedName(
-      t.identifier("React"),
-      t.identifier("HTMLProps")
-    );
+    const qualifiedTypeAnnotation = t.tsQualifiedName(t.identifier("React"), t.identifier("HTMLProps"));
 
-    const myTypeLiteral = t.tsTypeReference(
-      t.identifier(translateHTMLComponent(targetTag))
-    );
+    const myTypeLiteral = t.tsTypeReference(t.identifier(translateHTMLComponent(targetTag)));
 
-    return t.tsTypeReference(
-      qualifiedTypeAnnotation,
-      t.tsTypeParameterInstantiation([myTypeLiteral])
-    );
+    return t.tsTypeReference(qualifiedTypeAnnotation, t.tsTypeParameterInstantiation([myTypeLiteral]));
   }
 
   const typeOfComponentAnnotation = t.tsTypeQuery(t.identifier(targetTag));
-  const qualifiedTypeAnnotation = t.tsQualifiedName(
-    t.identifier("Flow"),
-    t.identifier("ComponentProps")
-  );
+  const qualifiedTypeAnnotation = t.tsQualifiedName(t.identifier("Flow"), t.identifier("ComponentProps"));
 
-  return t.tsTypeReference(
-    qualifiedTypeAnnotation,
-    t.tsTypeParameterInstantiation([typeOfComponentAnnotation])
-  );
+  return t.tsTypeReference(qualifiedTypeAnnotation, t.tsTypeParameterInstantiation([typeOfComponentAnnotation]));
 }

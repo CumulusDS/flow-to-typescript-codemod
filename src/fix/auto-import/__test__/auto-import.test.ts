@@ -1,8 +1,5 @@
 import { autoImport } from "..";
-import {
-  expectMigrationReporterMethodCalled,
-  getTestFixState,
-} from "../../../convert/utils/testing";
+import { expectMigrationReporterMethodCalled, getTestFixState } from "../../../convert/utils/testing";
 
 jest.mock("../../../runner/migration-reporter");
 jest.mock("../../../runner/logger");

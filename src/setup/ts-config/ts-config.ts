@@ -33,8 +33,5 @@ export function defaultTsConfig(conversionPath: string) {
     };
   }
 
-  writeFileSync(
-    join(process.cwd(), "tsconfig.json"),
-    JSON.stringify(rootConfig, null, 2)
-  );
+  writeFileSync(join(process.cwd(), "tsconfig.json"), JSON.stringify(rootConfig, null, 2));
 }

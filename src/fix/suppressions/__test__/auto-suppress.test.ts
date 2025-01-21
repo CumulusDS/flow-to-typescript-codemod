@@ -1,8 +1,5 @@
 import { autoSuppressErrors } from "../auto-suppress";
-import {
-  createOutputRecorder,
-  getTestFixState,
-} from "../../../convert/utils/testing";
+import { createOutputRecorder, getTestFixState } from "../../../convert/utils/testing";
 
 jest.mock("../../../runner/migration-reporter");
 jest.mock("../../../runner/logger");
