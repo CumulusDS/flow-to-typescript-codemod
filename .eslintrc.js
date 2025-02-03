@@ -44,4 +44,14 @@ module.exports = {
     "src/test/test-files/*",
     "src/fix/suppressions/__test__/test-input.ts",
   ],
+  overrides: [
+    {
+      files: ["cumulusSteps/**/*.ts"],
+      rules: {
+        "no-unused-vars": "off",
+        "no-use-before-define": "off",
+        "no-shadow": "off",
+      },
+    },
+  ],
 };

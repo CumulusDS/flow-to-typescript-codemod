@@ -153,6 +153,7 @@ export class CumulusSteps {
     this.addStep("Add @types/jest", async () => await runCommands(this.targetRepoPath, ["yarn add @types/jest --dev"]));
     this.addStep("Add flowgen", async () => await runCommands(this.targetRepoPath, ["yarn add flowgen --dev"]));
   }
+
   constructor(targetRepoPath: string) {
     this.targetRepoPath = targetRepoPath;
     this.addDefaultSteps();
