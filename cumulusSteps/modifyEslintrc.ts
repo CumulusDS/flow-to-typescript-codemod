@@ -19,6 +19,16 @@ export function modifyEslintConfig(filePath: string) {
           tsx: "never",
         },
       ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
     };
 
     // Add settings to disable airbnb rule about extensions

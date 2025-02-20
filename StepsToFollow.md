@@ -38,7 +38,7 @@ yarn typescriptify convert -p ../<target-repo-path> --write --delete
 
 ### :bell: Run cumulus specific steps
 ```bash
-yarn cumulusify -t ../cerebro
+yarn cumulusify -t ../<target-repo-path>
 ``` 
 
 ## Manual Steps for reference
