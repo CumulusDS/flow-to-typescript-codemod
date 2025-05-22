@@ -259,7 +259,7 @@ describe("transform declarations", () => {
   it("converts more complicated $Exact types", async () => {
     const src = dedent`type Test = $Exact<T | { foo: string }>;`;
     const expected = dedent`type Test = T | {
-      foo: string
+      foo: string;
     };`;
     expect(await transform(src)).toBe(expected);
   });
@@ -487,7 +487,7 @@ describe("transform declarations", () => {
   it("Converts React.Node to React.ReactNode in Props", async () => {
     const src = `type Props = {children?: React.Node};`;
     const expected = dedent`type Props = {
-      children?: React.ReactNode
+      children?: React.ReactNode;
     };`;
     expect(await transform(src)).toBe(expected);
   });

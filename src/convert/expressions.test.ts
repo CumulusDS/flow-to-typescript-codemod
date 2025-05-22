@@ -118,7 +118,7 @@ describe("transform expressions", () => {
       |}> = new Array(0);`;
       const expected = dedent`
       const a: Array<{
-        foo: 'bar'
+        foo: 'bar';
       }> = new Array(0);`;
       expect(await transform(src)).toBe(expected);
     });
@@ -132,7 +132,7 @@ describe("transform expressions", () => {
       const expected = dedent`
       const test = () => {
         return class extends React.Component<Record<any, any>, {
-          bar: string
+          bar: string;
         }> {};
       };`;
       expect(await transform(src)).toBe(expected);
@@ -141,7 +141,7 @@ describe("transform expressions", () => {
     it("should not change if there are no exact bars", async () => {
       const expected = dedent`
       const a: Array<{
-        foo: 'bar'
+        foo: 'bar';
       }> = new Array(0);`;
       expect(await transform(expected)).toBe(expected);
     });
@@ -149,11 +149,11 @@ describe("transform expressions", () => {
     it("should remove the exact object types from constructed objects", async () => {
       const src = dedent`// @flow
       const a = new Array<{|
-        foo: 'bar'
+        foo: 'bar';
       |}>();`;
       const expected = dedent`
       const a = new Array<{
-        foo: 'bar'
+        foo: 'bar';
       }>();`;
       expect(await transform(src)).toBe(expected);
     });
