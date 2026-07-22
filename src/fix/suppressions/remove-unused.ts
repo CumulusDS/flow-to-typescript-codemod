@@ -32,6 +32,7 @@ function removeUnusedInFile(metrics: Metrics, positions: Record<number, CommentT
             addedLength -= length;
           }
           metrics.removed += 1;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           logger.error(`Error when trying to remove suppressions at pos:${
             start + addedLength

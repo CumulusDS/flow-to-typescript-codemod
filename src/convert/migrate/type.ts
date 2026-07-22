@@ -314,6 +314,7 @@ function actuallyMigrateType(
                 ),
               ])
             );
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (e) {
             // These are just test functions so return the default if fetching the member expression fails for whatever reason
             return t.tsTypeReference(

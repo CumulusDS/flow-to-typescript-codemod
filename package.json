@@ -27,9 +27,9 @@
     "types": "tsc -b ."
   },
   "devDependencies": {
-    "@babel/parser": "7.27.2",
-    "@babel/traverse": "^7.27.1",
-    "@babel/types": "7.27.1",
+    "@babel/parser": "7.29.7",
+    "@babel/traverse": "^7.29.7",
+    "@babel/types": "7.29.7",
     "@types/dedent": "^0.7.2",
     "@types/fs-extra": "^8.1.5",
     "@types/jest": "^29.5.14",
@@ -38,17 +38,17 @@
     "@types/react": "^16.14.64",
     "@types/signale": "^1.4.7",
     "@types/yargs": "^17.0.33",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
-    "chalk": "^2.4.2",
+    "@typescript-eslint/eslint-plugin": "^8.64.0",
+    "@typescript-eslint/parser": "^8.64.0",
+    "chalk": "^4.1.2",
     "csv-stringify": "^6.5.2",
     "dedent": "^0.7.0",
-    "esbuild": "^0.25.4",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.10.0",
-    "eslint-plugin-import": "^2.31.0",
+    "esbuild": "^0.28.1",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jest": "^25.7.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-prettier": "^5.5.6",
     "flow": "^0.2.3",
     "flow-bin": "^0.272.0",
     "fs-extra": "^8.1.0",
@@ -65,5 +65,5 @@
     "typescript": "5.8.3",
     "yargs": "^17.7.2"
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.17.1"
 }
