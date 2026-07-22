@@ -31,7 +31,7 @@ describe("fixTypeExports", () => {
         autoImport: false,
         fixTypeExports: false,
       }),
-      recordTestResult
+      recordTestResult,
     );
 
     expectMigrationReporterMethodCalled(`typeExports`);

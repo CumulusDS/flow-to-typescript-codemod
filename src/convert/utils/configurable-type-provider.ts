@@ -21,7 +21,7 @@ export class ConfigurableTypeProvider {
       // Record<any, any>
       return t.tsTypeReference(
         t.identifier("Record"),
-        t.tsTypeParameterInstantiation([t.tsAnyKeyword(), t.tsAnyKeyword()])
+        t.tsTypeParameterInstantiation([t.tsAnyKeyword(), t.tsAnyKeyword()]),
       );
     } else {
       return t.tsAnyKeyword();

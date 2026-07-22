@@ -8,7 +8,7 @@ import { MetaData } from "./metadata";
 export function migrateTypeParameterDeclaration(
   reporter: MigrationReporter,
   state: State,
-  flowTypeParameters: t.TypeParameterDeclaration
+  flowTypeParameters: t.TypeParameterDeclaration,
 ): t.TSTypeParameterDeclaration {
   const params = flowTypeParameters.params.map((flowTypeParameter) => {
     // ReadOnlyMap<K, +V>
@@ -23,7 +23,7 @@ export function migrateTypeParameterDeclaration(
             isTypeParameter: true,
           })
         : null,
-      flowTypeParameter.name
+      flowTypeParameter.name,
     );
     tsTypeParameter.name = flowTypeParameter.name;
     inheritLocAndComments(flowTypeParameter, tsTypeParameter);
@@ -38,7 +38,7 @@ export function migrateTypeParameterInstantiation(
   reporter: MigrationReporter,
   state: State,
   flowTypeParameters: t.TypeParameterInstantiation,
-  metaData?: MetaData
+  metaData?: MetaData,
 ): t.TSTypeParameterInstantiation {
   const params = flowTypeParameters.params.map((flowTypeParameter) => {
     return migrateType(reporter, state, flowTypeParameter, metaData);

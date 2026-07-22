@@ -105,7 +105,7 @@ export async function removeUnusedErrors({ project }: FixCommandState, writeFile
       writeFile(sourceFile);
     } catch (e) {
       logger.warn(
-        `Error when saving suppressed source file. Ensure that node_modules is not being type checked by your TSConfig. Error: ${e}.`
+        `Error when saving suppressed source file. Ensure that node_modules is not being type checked by your TSConfig. Error: ${e}.`,
       );
     }
   }

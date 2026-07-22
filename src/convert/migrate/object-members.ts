@@ -9,7 +9,7 @@ import { migrateTypeParameterDeclaration } from "./type-parameter";
 export function migrateObjectMember(
   reporter: MigrationReporter,
   state: State,
-  flowMember: t.ObjectTypeProperty | t.ObjectTypeIndexer | t.ObjectTypeCallProperty | t.ObjectTypeInternalSlot
+  flowMember: t.ObjectTypeProperty | t.ObjectTypeIndexer | t.ObjectTypeCallProperty | t.ObjectTypeInternalSlot,
 ): t.TSTypeElement {
   const tsMember = actuallyMigrateObjectMember(reporter, state, flowMember);
   inheritLocAndComments(flowMember, tsMember);
@@ -19,7 +19,7 @@ export function migrateObjectMember(
 function actuallyMigrateObjectMember(
   reporter: MigrationReporter,
   state: State,
-  flowMember: t.ObjectTypeProperty | t.ObjectTypeIndexer | t.ObjectTypeCallProperty | t.ObjectTypeInternalSlot
+  flowMember: t.ObjectTypeProperty | t.ObjectTypeIndexer | t.ObjectTypeCallProperty | t.ObjectTypeInternalSlot,
 ): t.TSTypeElement {
   switch (flowMember.type) {
     case "ObjectTypeProperty": {
@@ -62,7 +62,7 @@ function actuallyMigrateObjectMember(
           flowMember.key,
           tsValue.typeParameters,
           tsValue.parameters,
-          tsValue.typeAnnotation
+          tsValue.typeAnnotation,
         );
 
         tsMethodSignature.computed = flowMember.key.type !== "Identifier";
@@ -83,10 +83,10 @@ function actuallyMigrateObjectMember(
           buildTSIdentifier(
             flowMember.id ? flowMember.id.name : "key",
             null,
-            t.tsTypeAnnotation(migrateType(reporter, state, flowMember.key))
+            t.tsTypeAnnotation(migrateType(reporter, state, flowMember.key)),
           ),
         ],
-        t.tsTypeAnnotation(migrateType(reporter, state, flowMember.value))
+        t.tsTypeAnnotation(migrateType(reporter, state, flowMember.value)),
       );
       tsIndexSignature.readonly = flowMember.variance ? flowMember.variance.kind === "plus" : null;
       return tsIndexSignature;
@@ -100,7 +100,7 @@ function actuallyMigrateObjectMember(
         const callSignature = t.tsCallSignatureDeclaration(
           null,
           [currentParams],
-          t.tsTypeAnnotation(t.tsUnknownKeyword())
+          t.tsTypeAnnotation(t.tsUnknownKeyword()),
         );
         // Add the comment here, so it will get copied over at the end of this block.
         // @ts-expect-error comments type differs between recast and babel
@@ -125,8 +125,8 @@ function actuallyMigrateObjectMember(
         t.tsTypeAnnotation(
           migrateType(reporter, state, flowType.returnType, {
             returnType: true,
-          })
-        )
+          }),
+        ),
       );
 
     case "ObjectTypeInternalSlot":

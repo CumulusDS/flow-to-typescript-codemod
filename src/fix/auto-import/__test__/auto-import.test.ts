@@ -25,7 +25,7 @@ describe("autoImport", () => {
         autoImport: false,
         fixTypeExports: false,
       }),
-      false
+      false,
     );
 
     expectMigrationReporterMethodCalled(`autoImport`);

@@ -2,7 +2,7 @@ import * as t from "@babel/types";
 import MigrationReporter from "../../runner/migration-reporter";
 
 export function handleAsyncReturnType<
-  TNodeType extends t.FunctionExpression | t.FunctionDeclaration | t.ArrowFunctionExpression | t.ClassMethod
+  TNodeType extends t.FunctionExpression | t.FunctionDeclaration | t.ArrowFunctionExpression | t.ClassMethod,
 >(node: TNodeType, reporter: MigrationReporter, filePath: string, loc: t.SourceLocation) {
   const { returnType } = node;
 
@@ -16,7 +16,7 @@ export function handleAsyncReturnType<
     reporter.asyncFunctionReturnType(filePath, loc, returnType.typeAnnotation.id.name);
 
     const typeAnnotation = t.typeAnnotation(
-      t.genericTypeAnnotation(t.identifier("Promise"), t.typeParameterInstantiation([returnType.typeAnnotation]))
+      t.genericTypeAnnotation(t.identifier("Promise"), t.typeParameterInstantiation([returnType.typeAnnotation])),
     );
 
     node.returnType = typeAnnotation;

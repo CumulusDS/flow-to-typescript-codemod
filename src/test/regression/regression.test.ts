@@ -19,7 +19,7 @@ function generateTypeScriptErrorMessages(received: ts.Diagnostic[]) {
   });
   return dedent`Received TypeScript errors:
    ${dedent(
-     [...new Set(errorMessages)].reduce((returnMessage, error, n) => `${returnMessage + (n + 1)}. ${error}\n\n`, "")
+     [...new Set(errorMessages)].reduce((returnMessage, error, n) => `${returnMessage + (n + 1)}. ${error}\n\n`, ""),
    )}`;
 }
 
@@ -80,7 +80,7 @@ function replaceImports(data: string) {
 function compileTypeScriptCode(
   sourceFileName: string,
   code: string,
-  libs: string[]
+  libs: string[],
 ): {
   success: boolean;
   diagnostics: ts.Diagnostic[];

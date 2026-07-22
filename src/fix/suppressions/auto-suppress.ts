@@ -42,7 +42,7 @@ function addSuppressionsInFile(
   positions: Record<number, CommentToMake>,
   sourceFile: SourceFile,
   project: Project,
-  { jiraSlug, useIgnore }: FixCommandCliArgs
+  { jiraSlug, useIgnore }: FixCommandCliArgs,
 ) {
   let addedLength = 0;
   for (const { position, commentType, diagnostics } of Object.values(positions)) {
@@ -51,7 +51,7 @@ function addSuppressionsInFile(
       if (isInsuppressible) {
         logger.error(
           `Found an insuppressible error. Please fix manually:
-            ${project.formatDiagnosticsWithColorAndContext([error])}`
+            ${project.formatDiagnosticsWithColorAndContext([error])}`,
         );
       }
       return isInsuppressible;
@@ -129,7 +129,7 @@ export async function autoSuppressErrors({ argv, project }: FixCommandState, wri
       writeFile(sourceFile);
     } catch (e) {
       logger.warn(
-        `Error when saving suppressed source file. Ensure that node_modules is not being type checked by your TSConfig. Error: ${e}.`
+        `Error when saving suppressed source file. Ensure that node_modules is not being type checked by your TSConfig. Error: ${e}.`,
       );
     }
   }

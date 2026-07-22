@@ -36,7 +36,7 @@ export function transformTypeAnnotations({ reporter, state, file }: TransformerI
         ) {
           path.parent.optional = true;
           path.node.typeAnnotation.types = path.node.typeAnnotation.types.filter(
-            (unionType) => unionType.type !== "VoidTypeAnnotation"
+            (unionType) => unionType.type !== "VoidTypeAnnotation",
           );
         }
       }
@@ -54,7 +54,7 @@ export function transformTypeAnnotations({ reporter, state, file }: TransformerI
         path,
         t.tsTypeAnnotation(migrateType(reporter, state, path.node.typeAnnotation, metaData)),
         state.config.filePath,
-        reporter
+        reporter,
       );
     },
 

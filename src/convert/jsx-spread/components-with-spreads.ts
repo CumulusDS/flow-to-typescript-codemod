@@ -44,7 +44,7 @@ export function componentsWithSpreads(path: NodePath<t.Node>, propArgumentName: 
               }
             },
           },
-          elementState
+          elementState,
         );
         if (elementState.isSpread && t.isJSXIdentifier(node.name)) {
           const namePropsType = getComponentType(node.name.name);
@@ -56,7 +56,7 @@ export function componentsWithSpreads(path: NodePath<t.Node>, propArgumentName: 
               t.tsTypeParameterInstantiation([
                 namePropsType,
                 t.tsUnionType(elementState.omittedAttributes.map((attr) => t.tsLiteralType(t.stringLiteral(attr)))),
-              ])
+              ]),
             );
           } else {
             updatedComponentProps = namePropsType;
@@ -107,7 +107,7 @@ export function componentsWithSpreads(path: NodePath<t.Node>, propArgumentName: 
       restName: "",
       ignoredAttributes,
       ignoredNodes,
-    }
+    },
   );
 
   return componentsWithSpreads;

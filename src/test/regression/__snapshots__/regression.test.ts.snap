@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Regression tests flow_typescript_differences 1`] = `
 "import {Flow} from 'flow-to-typescript-codemod';

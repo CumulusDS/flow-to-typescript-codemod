@@ -10,7 +10,7 @@ export async function runTransforms(
   reporter: MigrationReporter,
   state: State,
   file: t.File,
-  transforms: readonly Transformer[]
+  transforms: readonly Transformer[],
 ): Promise<void> {
   for (const transform of transforms) {
     // eslint-disable-next-line no-await-in-loop

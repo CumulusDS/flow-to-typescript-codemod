@@ -1,7 +1,7 @@
 import { Diagnostic, DiagnosticMessageChain } from "ts-morph";
 
 function isDiagnosticMessageChain(
-  diagnostic: Diagnostic | DiagnosticMessageChain
+  diagnostic: Diagnostic | DiagnosticMessageChain,
 ): diagnostic is DiagnosticMessageChain {
   return "getNext" in diagnostic;
 }

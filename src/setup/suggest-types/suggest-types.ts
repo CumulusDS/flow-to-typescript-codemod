@@ -40,7 +40,7 @@ export function suggestTypes(reporter: MigrationReporter) {
           }
           resolve(pkgName);
         });
-      }).catch(() => null)
+      }).catch(() => null),
     );
 
   // Print out packages that need types, and have something available in `@types`

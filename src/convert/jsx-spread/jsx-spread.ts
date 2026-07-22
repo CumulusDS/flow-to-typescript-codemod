@@ -26,7 +26,7 @@ function getNewPropsType(propParam: t.TSType, componentSpreads: t.TSType[]) {
 
   const omittedFromProps = t.tsTypeReference(
     t.identifier("Omit"),
-    t.tsTypeParameterInstantiation([allPropTypes, myKeyOfOperator])
+    t.tsTypeParameterInstantiation([allPropTypes, myKeyOfOperator]),
   );
 
   return t.tsIntersectionType([propParam, omittedFromProps]);
@@ -64,7 +64,7 @@ const functionalVisitor: VisitNodeFunction<TransformerInput, t.FunctionDeclarati
 
     propsParam.typeAnnotation.typeAnnotation = getNewPropsType(
       propsParam.typeAnnotation.typeAnnotation,
-      localComponentsWithSpreads
+      localComponentsWithSpreads,
     );
   };
 
@@ -105,7 +105,7 @@ export function transformJsxSpread(transformerInput: TransformerInput) {
                 this.componentsWithSpreads.push(...componentsWithSpreads(path, "this.props"));
               },
             },
-            componentState
+            componentState,
           );
 
           if (componentState.componentsWithSpreads.length === 0) {
@@ -133,6 +133,6 @@ export function transformJsxSpread(transformerInput: TransformerInput) {
       ArrowFunctionExpression: functionalVisitor,
     },
     undefined,
-    transformerInput
+    transformerInput,
   );
 }

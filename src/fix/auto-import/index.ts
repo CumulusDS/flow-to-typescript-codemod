@@ -33,7 +33,7 @@ export async function autoImport({ argv, migrationReporter, project }: FixComman
       }
     } catch (e) {
       logger.warn(
-        `Error when saving suppressed source file. Ensure that node_modules is not being type checked by your TSConfig. Error: ${e}.`
+        `Error when saving suppressed source file. Ensure that node_modules is not being type checked by your TSConfig. Error: ${e}.`,
       );
     }
   });
