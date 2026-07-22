@@ -153,12 +153,15 @@ export async function runPrimaryAsync(options: ConvertCommandCliArgs) {
         timeoutId = null;
       }
 
-      timeoutId = setTimeout(() => {
-        logger.warn(`Worker #${i + 1} hasn’t responded in 2 minutes after sending the batch:`);
-        for (const file of batch) {
-          logger.warn(`• ${path.relative(process.cwd(), file.filePath)}`);
-        }
-      }, 2 * 60 * 1000);
+      timeoutId = setTimeout(
+        () => {
+          logger.warn(`Worker #${i + 1} hasn’t responded in 2 minutes after sending the batch:`);
+          for (const file of batch) {
+            logger.warn(`• ${path.relative(process.cwd(), file.filePath)}`);
+          }
+        },
+        2 * 60 * 1000,
+      );
     }
   }
 
@@ -197,7 +200,7 @@ export async function runPrimaryAsync(options: ConvertCommandCliArgs) {
 
     if (mergedReport.totals.error > 0) {
       logger.error(
-        `Encountered ${mergedReport.totals.error} errors while processing ${mergedReport.lineCount} lines in ${flowFilePaths.length} files.`
+        `Encountered ${mergedReport.totals.error} errors while processing ${mergedReport.lineCount} lines in ${flowFilePaths.length} files.`,
       );
       process.exit(1);
     }

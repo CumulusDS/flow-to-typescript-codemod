@@ -11,7 +11,7 @@ import { migrateType } from "./type";
 export function migrateFunctionParameters(
   reporter: MigrationReporter,
   state: State,
-  flowType: t.FunctionTypeAnnotation
+  flowType: t.FunctionTypeAnnotation,
 ) {
   function isOptional(param: t.FunctionTypeParam) {
     return (
@@ -28,9 +28,9 @@ export function migrateFunctionParameters(
       !flowType.params.some(
         (p, j) =>
           // if the remaining array has any non-optional parameters, then do no mark as optional
-          j > i && !isOptional(p)
+          j > i && !isOptional(p),
       ) && isOptional(flowParam),
-      t.tsTypeAnnotation(migrateType(reporter, state, flowParam.typeAnnotation))
+      t.tsTypeAnnotation(migrateType(reporter, state, flowParam.typeAnnotation)),
     );
     inheritLocAndComments(flowParam, tsParam);
     return tsParam;

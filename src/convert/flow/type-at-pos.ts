@@ -15,7 +15,7 @@ import { transformPrivateTypes } from "../private-types";
 export function flowTypeAtPos(
   state: State,
   location: t.SourceLocation,
-  migrationReporter: MigrationReporter
+  migrationReporter: MigrationReporter,
 ): Promise<t.FlowType | null> {
   let resolve: (value: string) => void;
   let reject: (error: unknown) => void;
@@ -86,7 +86,7 @@ function processFlowTypeAtPosQueue() {
       processFlowTypeAtPosQueue();
       entry.migrationReporter.flowFailToParse(entry.filePath, entry.location, value as Error);
       entry.reject(value);
-    }
+    },
   );
 }
 
@@ -97,7 +97,7 @@ function processFlowTypeAtPosStdout(
   stdout: string,
   migrationReporter: MigrationReporter,
   state: State,
-  location: t.SourceLocation
+  location: t.SourceLocation,
 ): t.FlowType | null {
   // Sanitize stdout...
   // `any(implicit)` -> `any`

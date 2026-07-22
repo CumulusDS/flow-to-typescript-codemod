@@ -32,6 +32,7 @@ function removeUnusedInFile(metrics: Metrics, positions: Record<number, CommentT
             addedLength -= length;
           }
           metrics.removed += 1;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           logger.error(`Error when trying to remove suppressions at pos:${
             start + addedLength
@@ -104,7 +105,7 @@ export async function removeUnusedErrors({ project }: FixCommandState, writeFile
       writeFile(sourceFile);
     } catch (e) {
       logger.warn(
-        `Error when saving suppressed source file. Ensure that node_modules is not being type checked by your TSConfig. Error: ${e}.`
+        `Error when saving suppressed source file. Ensure that node_modules is not being type checked by your TSConfig. Error: ${e}.`,
       );
     }
   }

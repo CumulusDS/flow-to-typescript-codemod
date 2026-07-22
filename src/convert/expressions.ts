@@ -35,23 +35,23 @@ export function transformExpressions({ reporter, state, file }: TransformerInput
               t.parenthesizedExpression(
                 t.tsAsExpression(
                   path.node.expression.expression,
-                  migrateType(reporter, state, path.node.expression.typeAnnotation.typeAnnotation)
-                )
+                  migrateType(reporter, state, path.node.expression.typeAnnotation.typeAnnotation),
+                ),
               ),
-              migrateType(reporter, state, path.node.typeAnnotation.typeAnnotation)
+              migrateType(reporter, state, path.node.typeAnnotation.typeAnnotation),
             ),
             state.config.filePath,
-            reporter
+            reporter,
           );
         } else {
           replaceWith(
             path,
             t.tsAsExpression(
               path.node.expression.expression,
-              migrateType(reporter, state, path.node.typeAnnotation.typeAnnotation)
+              migrateType(reporter, state, path.node.typeAnnotation.typeAnnotation),
             ),
             state.config.filePath,
-            reporter
+            reporter,
           );
         }
       } else if (
@@ -63,7 +63,7 @@ export function transformExpressions({ reporter, state, file }: TransformerInput
           path,
           t.tsAsExpression(path.node.expression, migrateType(reporter, state, path.node.typeAnnotation.typeAnnotation)),
           state.config.filePath,
-          reporter
+          reporter,
         );
       } else if (
         // `('foo': 'foo')` → `('foo' as const)`
@@ -80,7 +80,7 @@ export function transformExpressions({ reporter, state, file }: TransformerInput
           path,
           t.tsAsExpression(path.node.expression, t.tsTypeReference(t.identifier("const"))),
           state.config.filePath,
-          reporter
+          reporter,
         );
       } else if (isComplexLiteral(path.node.expression)) {
         // `(x: T)` → `(x as T)`
@@ -91,7 +91,7 @@ export function transformExpressions({ reporter, state, file }: TransformerInput
           path,
           t.tsAsExpression(path.node.expression, migrateType(reporter, state, path.node.typeAnnotation.typeAnnotation)),
           state.config.filePath,
-          reporter
+          reporter,
         );
       } else {
         // If you want to see all type casts which aren’t handled by the above:
@@ -106,10 +106,10 @@ export function transformExpressions({ reporter, state, file }: TransformerInput
             path.node.expression,
             migrateType(reporter, state, path.node.typeAnnotation.typeAnnotation, {
               path,
-            })
+            }),
           ),
           state.config.filePath,
-          reporter
+          reporter,
         );
       }
     },
@@ -155,7 +155,7 @@ export function transformExpressions({ reporter, state, file }: TransformerInput
             path.node.typeParameters = t.tsTypeParameterInstantiation([
               t.tsTypeReference(
                 t.identifier("Record"),
-                t.tsTypeParameterInstantiation([t.tsStringKeyword(), t.tsAnyKeyword()])
+                t.tsTypeParameterInstantiation([t.tsStringKeyword(), t.tsAnyKeyword()]),
               ),
             ]);
           }
@@ -185,7 +185,7 @@ export function transformExpressions({ reporter, state, file }: TransformerInput
         node.superTypeParameters = migrateTypeParameterInstantiation(
           reporter,
           state,
-          node.superTypeParameters as t.TypeParameterInstantiation
+          node.superTypeParameters as t.TypeParameterInstantiation,
         );
       }
     },
@@ -195,7 +195,7 @@ export function transformExpressions({ reporter, state, file }: TransformerInput
 function migrateArgumentsToParameters(
   path: NodePath<t.NewExpression> | NodePath<t.CallExpression>,
   reporter: MigrationReporter,
-  state: State
+  state: State,
 ) {
   if (path.node && path.node.typeArguments) {
     const newCall = path.node;

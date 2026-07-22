@@ -10,13 +10,16 @@ const severityLoggerMap: Record<MigrationReportItemSeverity, (message?: string) 
 };
 
 export async function stdOutFormatter(report: MigrationReport) {
-  const groupedReport = report.migrationReportItems.reduce((accum, current) => {
-    const typeBucket = accum[current.type] ?? [];
-    typeBucket.push(current);
-    accum[current.type] = typeBucket;
+  const groupedReport = report.migrationReportItems.reduce(
+    (accum, current) => {
+      const typeBucket = accum[current.type] ?? [];
+      typeBucket.push(current);
+      accum[current.type] = typeBucket;
 
-    return accum;
-  }, {} as Record<string, Array<MigrationReportItem>>);
+      return accum;
+    },
+    {} as Record<string, Array<MigrationReportItem>>,
+  );
 
   logger.scope("typescriptify", "report");
   logger.log();
@@ -42,6 +45,6 @@ export async function stdOutFormatter(report: MigrationReport) {
 
   logger.log(`\n`);
   logger.complete(
-    `Found ${report.totals.info} logs, ${report.totals.warn} warnings, and ${report.totals.error} errors.`
+    `Found ${report.totals.info} logs, ${report.totals.warn} warnings, and ${report.totals.error} errors.`,
   );
 }

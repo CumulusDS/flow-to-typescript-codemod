@@ -62,7 +62,7 @@ export async function componentPropChecks({ argv, migrationReporter, project }: 
         error.getLineNumber() ?? 0,
         importSourceFile.getDirectoryPath(),
         tagName,
-        attributeName
+        attributeName,
       );
     } else {
       migrationReporter.invalidAppProp(
@@ -70,7 +70,7 @@ export async function componentPropChecks({ argv, migrationReporter, project }: 
         error.getLineNumber() ?? 0,
         importSourceFile?.getFilePath(),
         tagName,
-        attributeName
+        attributeName,
       );
     }
   });

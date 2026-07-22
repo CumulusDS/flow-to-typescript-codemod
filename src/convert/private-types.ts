@@ -21,7 +21,7 @@ export function transformPrivateTypes({ file, state, reporter }: TransformerInpu
           path,
           t.qualifiedTypeIdentifier(t.identifier(name), t.identifier(qualification)),
           state.config.filePath,
-          reporter
+          reporter,
         );
       } else if (privateFlowType && isTypeAnnotation) {
         // Using t.tsAnyKeyword() here eventually collides w/ another transformer that makes this "unknown"

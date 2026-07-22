@@ -44,7 +44,7 @@ export async function runWorkerAsync(options: ConvertCommandCliArgs) {
             cancelHeartbeat();
             logger.error(error);
             process.exit(1);
-          }
+          },
         );
         break;
       }

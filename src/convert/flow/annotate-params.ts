@@ -49,7 +49,7 @@ export function annotateParamsWithFlowTypeAtPos(
   state: State,
   params: t.ClassMethod["params"],
   path: NodePath,
-  isInsideCreateReactClass?: boolean
+  isInsideCreateReactClass?: boolean,
 ): Promise<unknown> {
   if (!isInsideCreateReactClass && parentProvidesImplicitType(path)) {
     return Promise.resolve();
@@ -85,7 +85,7 @@ export function annotateParamsWithFlowTypeAtPos(
 
           // Add the type annotation! Yaay.
           param.typeAnnotation = t.tsTypeAnnotation(tsType);
-        })()
+        })(),
       );
     }
   }

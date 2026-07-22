@@ -71,10 +71,10 @@ describe("parameter inference", () => {
                 watermark: "@test",
                 watermarkMessage: `Test message`,
               },
-            })
-          )
+            }),
+          ),
         ).toBe(expected);
-        expect(mockedFlowTypeAtPos).not.toBeCalled();
+        expect(mockedFlowTypeAtPos).not.toHaveBeenCalled();
       });
     });
   });
@@ -84,13 +84,13 @@ describe("parameter inference", () => {
       const src = `const r = [1, 2, 3].map(a => a + 1);`;
       const expected = `const r = [1, 2, 3].map(a => a + 1);`;
       expect(await transform(src)).toBe(expected);
-      expect(mockedFlowTypeAtPos).not.toBeCalled();
+      expect(mockedFlowTypeAtPos).not.toHaveBeenCalled();
     });
     it("does not provide inference on FunctionDeclarations within CallExpressions", async () => {
       const src = `const r = [1, 2, 3].map(function fn(a) {return a + 1});`;
       const expected = `const r = [1, 2, 3].map(function fn(a) {return a + 1});`;
       expect(await transform(src)).toBe(expected);
-      expect(mockedFlowTypeAtPos).not.toBeCalled();
+      expect(mockedFlowTypeAtPos).not.toHaveBeenCalled();
     });
   });
 });

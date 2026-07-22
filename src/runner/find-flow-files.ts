@@ -34,7 +34,7 @@ export function findFlowFilesAsync(
   rootDirectory: string,
   ignoredDirectories: Array<string>,
   reporter: MigrationReporter,
-  stripPathsForIgnore: boolean
+  stripPathsForIgnore: boolean,
 ): Promise<FlowFileList> {
   return new Promise((_resolve, _reject) => {
     // Tracks whether or not we have rejected our promise.
@@ -82,7 +82,7 @@ export function findFlowFilesAsync(
       directory: string,
       fileName: string,
       reporter: MigrationReporter,
-      stripPathsForIgnore: boolean
+      stripPathsForIgnore: boolean,
     ) {
       // If we were rejected then we should not continue.
       if (rejected === true) {

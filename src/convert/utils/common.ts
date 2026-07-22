@@ -30,7 +30,7 @@ export function hasJSX({ file }: TransformerInput): boolean {
 export function hasNullReturn(
   body: t.BlockStatement,
   scope: Scope | undefined,
-  parentPath: NodePath<t.Node> | null | undefined
+  parentPath: NodePath<t.Node> | null | undefined,
 ): boolean {
   let found = false;
   traverse(
@@ -43,7 +43,7 @@ export function hasNullReturn(
       },
     },
     scope,
-    parentPath
+    parentPath,
   );
 
   return found;
@@ -80,7 +80,7 @@ export function hasDeclaration(file: t.File): boolean {
 export function buildTSIdentifier(
   name: string,
   optional?: boolean | null,
-  typeAnnotation?: t.TSTypeAnnotation | null
+  typeAnnotation?: t.TSTypeAnnotation | null,
 ): t.Identifier {
   const identifier = t.identifier(name);
   if (optional != null) identifier.optional = optional;
@@ -174,7 +174,7 @@ export function inheritLocAndComments(oldNode: t.Node, newNode: t.Node) {
 
 export function addCommentsAtHeadOfNode(
   rootNode: types.namedTypes.Node | undefined,
-  comments: (types.namedTypes.CommentBlock | types.namedTypes.CommentLine)[]
+  comments: (types.namedTypes.CommentBlock | types.namedTypes.CommentLine)[],
 ) {
   if (rootNode !== undefined) {
     rootNode.comments = rootNode.comments || [];

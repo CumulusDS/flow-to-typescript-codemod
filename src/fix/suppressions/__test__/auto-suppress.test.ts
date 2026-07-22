@@ -27,7 +27,7 @@ describe("autoSuppressErrors", () => {
         autoImport: false,
         fixTypeExports: false,
       }),
-      recordTestResult
+      recordTestResult,
     );
 
     expect(results["test-input.ts"]).toMatchSnapshot();

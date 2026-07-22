@@ -67,7 +67,7 @@ const defaultWriter = (file: SourceFile) => file.saveSync();
 
 export async function fixTypeExports(
   { argv, migrationReporter, project }: FixCommandState,
-  writeFile: FileWriter = defaultWriter
+  writeFile: FileWriter = defaultWriter,
 ) {
   logger.info("Checking TypeScript export types");
   logger.warn(`[Experimental] This transformation is experimental.`);
@@ -107,7 +107,7 @@ export async function fixTypeExports(
       writeFile(sourceFile);
     } catch (e) {
       logger.warn(
-        `Error when saving suppressed source file. Ensure that node_modules is not being type checked by your TSConfig. Error: ${e}.`
+        `Error when saving suppressed source file. Ensure that node_modules is not being type checked by your TSConfig. Error: ${e}.`,
       );
     }
   });
@@ -116,6 +116,6 @@ export async function fixTypeExports(
 
   await MigrationReporter.logReport(
     migrationReporter.generateReport(),
-    argv.format === "json" ? jsonFormatter(argv.output) : stdOutFormatter
+    argv.format === "json" ? jsonFormatter(argv.output) : stdOutFormatter,
   );
 }

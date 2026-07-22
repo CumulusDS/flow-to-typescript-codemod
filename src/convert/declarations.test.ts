@@ -775,7 +775,7 @@ describe("transform declarations", () => {
       `;
 
       mockFlowTypeAtPos.mockResolvedValue(
-        t.genericTypeAnnotation(t.identifier("Array"), t.typeParameterInstantiation([t.numberTypeAnnotation()]))
+        t.genericTypeAnnotation(t.identifier("Array"), t.typeParameterInstantiation([t.numberTypeAnnotation()])),
       );
 
       expect(await transform(src)).toBe(expected);

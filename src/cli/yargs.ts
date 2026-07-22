@@ -19,7 +19,7 @@ import {
 export const parseCommands = (
   convert: (args: ConvertCommandCliArgs) => void,
   fix: (args: FixCommandCliArgs) => void,
-  setup: (args: SetupCommandCliArgs) => void
+  setup: (args: SetupCommandCliArgs) => void,
 ) => {
   const yargsInstance = yargs(hideBin(process.argv));
 
@@ -34,15 +34,15 @@ export const parseCommands = (
     .example("$0 convert --path ./src --format csv --output ./migration-report.csv", "Generate a CSV migration report.")
     .example(
       "$0 convert --path . --write --delete",
-      "Fully convert a project to TypeScript, writing files and deleting Flow files."
+      "Fully convert a project to TypeScript, writing files and deleting Flow files.",
     )
     .example(
       "$0 convert --path . --write --target=./dist",
-      "Specify a directory to output the TypeScript files. Useful for making declarations."
+      "Specify a directory to output the TypeScript files. Useful for making declarations.",
     )
     .example(
       "$0 fix --autoSuppressErrors --removeUnused",
-      "Remove unused ts-expect-errors, and add any for current errors."
+      "Remove unused ts-expect-errors, and add any for current errors.",
     )
     .example("$0 fix --autoSuppressErrors --jiraSlug JIRA-722", "Suppress errors but add a JIRA slug to the comments.")
     .example("$0 fix --generateReport --output ./migration-report.csv", "Generate a CSV file of categorized TS errors.")
@@ -91,7 +91,7 @@ export const parseCommands = (
             describe: "Path to output report.",
           });
       },
-      setup
+      setup,
     )
     .command(
       ["convert", "run"],
@@ -219,7 +219,7 @@ export const parseCommands = (
             describe: `Converts files with no flow annotations as no-Flow files`,
           });
       },
-      convert
+      convert,
     )
     .command(
       ["fix", "check"],
@@ -285,7 +285,7 @@ export const parseCommands = (
             describe: "Experimental: Fix exported types to use type-only exports, to fix isolatedModules errors.",
           });
       },
-      fix
+      fix,
     )
     .parse();
 };

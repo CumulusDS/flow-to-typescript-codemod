@@ -111,10 +111,10 @@ export function transformDeclarations({ reporter, state, file }: TransformerInpu
         t.tsTypeAliasDeclaration(
           path.node.id,
           path.node.typeParameters ? migrateTypeParameterDeclaration(reporter, state, path.node.typeParameters) : null,
-          migrateType(reporter, state, path.node.right)
+          migrateType(reporter, state, path.node.right),
         ),
         state.config.filePath,
-        reporter
+        reporter,
       );
     },
 
@@ -131,10 +131,10 @@ export function transformDeclarations({ reporter, state, file }: TransformerInpu
         t.tsTypeAliasDeclaration(
           path.node.id,
           path.node.typeParameters ? migrateTypeParameterDeclaration(reporter, state, path.node.typeParameters) : null,
-          migrateType(reporter, state, path.node.impltype)
+          migrateType(reporter, state, path.node.impltype),
         ),
         state.config.filePath,
-        reporter
+        reporter,
       );
     },
 
@@ -153,7 +153,7 @@ export function transformDeclarations({ reporter, state, file }: TransformerInpu
               migrateQualifiedIdentifier(flowExtends.id),
               flowExtends.typeParameters
                 ? migrateTypeParameterInstantiation(reporter, state, flowExtends.typeParameters)
-                : null
+                : null,
             );
             inheritLocAndComments(flowExtends, tsExtends);
             return tsExtends;
@@ -169,7 +169,7 @@ export function transformDeclarations({ reporter, state, file }: TransformerInpu
         path,
         t.tsInterfaceDeclaration(path.node.id, typeParameters, extends_, t.tsInterfaceBody(body.members)),
         state.config.filePath,
-        reporter
+        reporter,
       );
     },
 
@@ -218,8 +218,8 @@ export function transformDeclarations({ reporter, state, file }: TransformerInpu
           path.node.id.typeAnnotation = t.tsTypeAnnotation(
             t.tsTypeReference(
               t.identifier("Record"),
-              t.tsTypeParameterInstantiation([t.tsStringKeyword(), t.tsAnyKeyword()])
-            )
+              t.tsTypeParameterInstantiation([t.tsStringKeyword(), t.tsAnyKeyword()]),
+            ),
           );
         } else if (state.config.isTestFile) {
           // `let x;` → `let x: any;`
@@ -230,7 +230,7 @@ export function transformDeclarations({ reporter, state, file }: TransformerInpu
             path.node.id.typeAnnotation = t.tsTypeAnnotation(t.tsAnyKeyword());
           } else if (path.node.init?.type === "ArrayExpression" && path.node.init.elements.length === 0) {
             path.node.id.typeAnnotation = t.tsTypeAnnotation(
-              t.tsTypeReference(t.identifier("Array"), t.tsTypeParameterInstantiation([t.tsAnyKeyword()]))
+              t.tsTypeReference(t.identifier("Array"), t.tsTypeParameterInstantiation([t.tsAnyKeyword()])),
             );
           }
         }
@@ -263,7 +263,7 @@ export function transformDeclarations({ reporter, state, file }: TransformerInpu
                 })
                 .catch((err) => {
                   reporter.error(state.config.filePath, err);
-                })
+                }),
             );
           }
         }
@@ -371,14 +371,14 @@ export function transformDeclarations({ reporter, state, file }: TransformerInpu
         node.superTypeParameters = migrateTypeParameterInstantiation(
           reporter,
           state,
-          node.superTypeParameters as t.TypeParameterInstantiation
+          node.superTypeParameters as t.TypeParameterInstantiation,
         );
       }
     },
     ObjectMethod(path) {
       // Add Flow’s inferred type for all unannotated function parameters if inside a react class
       awaitPromises.push(
-        annotateParamsWithFlowTypeAtPos(reporter, state, path.node.params, path, isInsideCreateReactClass(path))
+        annotateParamsWithFlowTypeAtPos(reporter, state, path.node.params, path, isInsideCreateReactClass(path)),
       );
     },
   });

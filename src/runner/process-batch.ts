@@ -29,7 +29,7 @@ export const recastOptions: Options = {
 export async function processBatchAsync(
   reporter: MigrationReporter,
   filePaths: FlowFileList,
-  options: ConvertCommandCliArgs
+  options: ConvertCommandCliArgs,
 ) {
   await Promise.all(
     filePaths.map(async ({ filePath, fileType }) => {
@@ -128,6 +128,6 @@ export async function processBatchAsync(
         reporter.error(filePath, error);
         logger.error(`Error found in ${filePath}: ${error}`, error);
       }
-    })
+    }),
   );
 }

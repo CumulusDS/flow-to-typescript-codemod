@@ -14,7 +14,7 @@ export function migrateType(
   reporter: MigrationReporter,
   state: State,
   flowType: t.FlowType,
-  metaData?: MetaData
+  metaData?: MetaData,
 ): t.TSType {
   const tsType = actuallyMigrateType(reporter, state, flowType, metaData);
   inheritLocAndComments(flowType, tsType);
@@ -30,7 +30,7 @@ function actuallyMigrateType(
   reporter: MigrationReporter,
   state: State,
   flowType: t.FlowType,
-  metaData?: MetaData
+  metaData?: MetaData,
 ): t.TSType {
   switch (flowType.type) {
     case "AnyTypeAnnotation":
@@ -65,8 +65,8 @@ function actuallyMigrateType(
         t.tsTypeAnnotation(
           migrateType(reporter, state, flowType.returnType, {
             returnType: true,
-          })
-        )
+          }),
+        ),
       );
     }
 
@@ -132,7 +132,7 @@ function actuallyMigrateType(
       if (id.type === "Identifier" && id.name === "MapOf" && params && params.params.length === 1) {
         return t.tsTypeReference(
           t.identifier("Record"),
-          t.tsTypeParameterInstantiation([t.tsStringKeyword(), params.params[0]])
+          t.tsTypeParameterInstantiation([t.tsStringKeyword(), params.params[0]]),
         );
       }
 
@@ -140,7 +140,7 @@ function actuallyMigrateType(
       if (id.type === "Identifier" && id.name === "MapOfWithKeyType" && params && params.params.length === 2) {
         return t.tsTypeReference(
           t.identifier("Record"),
-          t.tsTypeParameterInstantiation([params.params[0], params.params[1]])
+          t.tsTypeParameterInstantiation([params.params[0], params.params[1]]),
         );
       }
 
@@ -201,7 +201,7 @@ function actuallyMigrateType(
           t.identifier("Partial"),
           t.tsTypeParameterInstantiation([
             t.tsTypeReference(t.tsQualifiedName(t.identifier("Flow"), t.identifier("Diff")), params),
-          ])
+          ]),
         );
       }
 
@@ -273,7 +273,7 @@ function actuallyMigrateType(
         ) {
           return t.tsTypeReference(
             t.identifier("jest.MockedFunction"),
-            t.tsTypeParameterInstantiation([t.tsTypeQuery(t.identifier(parent.node.expression.expression.name))])
+            t.tsTypeParameterInstantiation([t.tsTypeQuery(t.identifier(parent.node.expression.expression.name))]),
           );
           // `(test.a: JestMockFn<any,any>)` → `(test.a as JestMockFn<typeof test.a>)`
         } else if (
@@ -289,13 +289,13 @@ function actuallyMigrateType(
               t.identifier("jest.MockedFunction"),
               t.tsTypeParameterInstantiation([
                 t.tsTypeQuery(t.identifier(getFqnForMemberExpression(parent.node.expression.expression))),
-              ])
+              ]),
             );
           } catch (_e) {
             // These are just test functions so return the default if fetching the member expression fails for whatever reason
             return t.tsTypeReference(
               t.identifier("jest.MockedFunction"),
-              t.tsTypeParameterInstantiation([t.tsAnyKeyword()])
+              t.tsTypeParameterInstantiation([t.tsAnyKeyword()]),
             );
           }
 
@@ -310,21 +310,22 @@ function actuallyMigrateType(
               t.identifier("jest.MockedFunction"),
               t.tsTypeParameterInstantiation([
                 t.tsTypeQuery(
-                  t.identifier(getFqnForMemberExpression(parent.node.object.expression as t.MemberExpression))
+                  t.identifier(getFqnForMemberExpression(parent.node.object.expression as t.MemberExpression)),
                 ),
-              ])
+              ]),
             );
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (e) {
             // These are just test functions so return the default if fetching the member expression fails for whatever reason
             return t.tsTypeReference(
               t.identifier("jest.MockedFunction"),
-              t.tsTypeParameterInstantiation([t.tsAnyKeyword()])
+              t.tsTypeParameterInstantiation([t.tsAnyKeyword()]),
             );
           }
         } else {
           return t.tsTypeReference(
             t.identifier("jest.MockedFunction"),
-            t.tsTypeParameterInstantiation([t.tsAnyKeyword()])
+            t.tsTypeParameterInstantiation([t.tsAnyKeyword()]),
           );
         }
       }
@@ -416,9 +417,9 @@ function actuallyMigrateType(
             parameter,
             t.tsTypeReference(
               t.tsQualifiedName(t.identifier("React"), t.identifier("ComponentProps")),
-              t.tsTypeParameterInstantiation([parameter])
+              t.tsTypeParameterInstantiation([parameter]),
             ),
-          ])
+          ]),
         );
       }
 
@@ -469,7 +470,7 @@ function actuallyMigrateType(
             t.tsQualifiedName(t.identifier("React"), t.identifier("ReactElement")),
             t.tsTypeParameterInstantiation([
               t.tsTypeReference(t.tsQualifiedName(t.identifier("React"), t.identifier("ComponentProps")), params),
-            ])
+            ]),
           );
         }
       }
@@ -484,7 +485,7 @@ function actuallyMigrateType(
       ) {
         return t.tsTypeReference(
           t.tsQualifiedName(t.identifier("React"), t.identifier(ReactTypes[id.right.name as keyof typeof ReactTypes])),
-          params
+          params,
         );
       }
 
@@ -504,9 +505,9 @@ function actuallyMigrateType(
         return t.tsTypeReference(
           t.tsQualifiedName(
             t.identifier("moment"),
-            t.identifier(MomentTypes[id.right.name as keyof typeof MomentTypes])
+            t.identifier(MomentTypes[id.right.name as keyof typeof MomentTypes]),
           ),
-          params
+          params,
         );
       }
 
@@ -524,7 +525,7 @@ function actuallyMigrateType(
           // Function types have weird specificities in intersections/unions. Wrap them in
           // parentheses to preserve the AST specificity.
           return tsMemberType.type === "TSFunctionType" ? t.tsParenthesizedType(tsMemberType) : tsMemberType;
-        })
+        }),
       );
 
     case "MixedTypeAnnotation":
@@ -568,7 +569,7 @@ function actuallyMigrateType(
       if (flowMembers.length === 0 && !metaData?.isInterfaceBody) {
         return t.tsTypeReference(
           t.identifier("Record"),
-          t.tsTypeParameterInstantiation([t.tsAnyKeyword(), t.tsAnyKeyword()])
+          t.tsTypeParameterInstantiation([t.tsAnyKeyword(), t.tsAnyKeyword()]),
         );
       }
 
@@ -627,7 +628,7 @@ function actuallyMigrateType(
                     t.tsTypeParameterInstantiation([
                       indexType.typeAnnotation,
                       onlyMember.typeAnnotation!.typeAnnotation,
-                    ])
+                    ]),
                   ),
                 ];
                 return t.tsTypeReference(t.identifier("Partial"), t.tsTypeParameterInstantiation(recordType));
@@ -664,7 +665,7 @@ function actuallyMigrateType(
       return t.tsTupleType(
         flowType.types.map((elementType) => {
           return migrateType(reporter, state, elementType);
-        })
+        }),
       );
     }
 
@@ -693,7 +694,7 @@ function actuallyMigrateType(
           // Function types have weird specificities in intersections/unions. Wrap them in
           // parentheses to preserve the AST specificity.
           return tsMemberType.type === "TSFunctionType" ? t.tsParenthesizedType(tsMemberType) : tsMemberType;
-        })
+        }),
       );
 
       return anyMemberIndex !== null ? tsUnionType.types[anyMemberIndex] : tsUnionType;
@@ -704,7 +705,7 @@ function actuallyMigrateType(
         return t.tsVoidKeyword();
       } else if (
         metaData?.path?.findParent(
-          (n) => t.isGenericTypeAnnotation(n) && t.isIdentifier(n.id) && n.id.name === "Promise"
+          (n) => t.isGenericTypeAnnotation(n) && t.isIdentifier(n.id) && n.id.name === "Promise",
         )
       ) {
         return t.tsVoidKeyword();
@@ -718,7 +719,7 @@ function actuallyMigrateType(
         state.config.filePath,
         flowType.loc as t.SourceLocation,
         (flowType as unknown as { name: string }).name ?? "undefined",
-        JSON.stringify(never.type)
+        JSON.stringify(never.type),
       );
       return t.tsUnknownKeyword();
     }

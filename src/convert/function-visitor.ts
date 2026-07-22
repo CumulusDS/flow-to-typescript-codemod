@@ -14,7 +14,7 @@ type FunctionVisitorProps = {
 };
 
 export const functionVisitor = <
-  TNodeType extends FunctionExpression | FunctionDeclaration | ArrowFunctionExpression | ClassMethod
+  TNodeType extends FunctionExpression | FunctionDeclaration | ArrowFunctionExpression | ClassMethod,
 >({
   awaitPromises,
   reporter,
@@ -145,7 +145,7 @@ export const functionVisitor = <
             ]);
           } else if (identifier.typeAnnotation.typeAnnotation.type === "UnionTypeAnnotation") {
             identifier.typeAnnotation.typeAnnotation.types = identifier.typeAnnotation.typeAnnotation.types.filter(
-              (unionType) => unionType.type !== "VoidTypeAnnotation"
+              (unionType) => unionType.type !== "VoidTypeAnnotation",
             );
             identifier.typeAnnotation.typeAnnotation = t.unionTypeAnnotation([
               identifier.typeAnnotation.typeAnnotation,
